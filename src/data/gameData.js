@@ -4,8 +4,8 @@ export const gameData = {
       id: 'farmer_john',
       name: 'John the Farmer',
       role: 'Peasant',
-      image: '/images/characters/farmer.svg',
-      background: '/images/backgrounds/farmland.svg',
+      image: '/images/characters/farmer.jpg',
+      background: '/images/backgrounds/farmland.jpg',
       baseComplaint: 'The taxes are crushing us, Your Majesty! We can barely feed our families.',
       dialogue: 'Your Majesty, taxes crush us! Children starve while nobles feast. Please show mercy!',
       choices: [

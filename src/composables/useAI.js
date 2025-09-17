@@ -54,10 +54,11 @@ export function useAI() {
               }]
             }],
             generationConfig: {
-              temperature: 0.8,
-              topK: 40,
-              topP: 0.95,
-              maxOutputTokens: 1024,
+              temperature: 0.7,  // Reduced for more consistent responses
+              topK: 40,          // Reduced for more focused responses
+              topP: 0.8,         // Reduced for more consistent responses
+              maxOutputTokens: 512,  // Reduced since we want short responses
+              candidateCount: 1   // Ensure single response
             }
           })
         }
@@ -68,7 +69,14 @@ export function useAI() {
       }
 
       const data = await response.json()
+      console.log('AI: Raw response:', data)
+      
+      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+        throw new Error('Invalid AI response structure')
+      }
+      
       const generatedText = data.candidates[0].content.parts[0].text
+      console.log('AI: Generated text:', generatedText)
 
       console.log('AI: Successfully generated content')
       // Parse the AI response and enhance the NPC
@@ -120,6 +128,7 @@ Game Context:
 - Relevant Past Actions: ${JSON.stringify(context.pastActions)}
 
 STRICT REQUIREMENTS:
+USE SIMPLE LANGUAGE
 1. Generate a dialogue that reflects the NPC's personality and their complaint.
 2. Consider how past royal decisions might have affected this character
 3. Choice text: MAXIMUM 10 words each - short and clear
@@ -133,23 +142,34 @@ Format your response as JSON:
   "choices": [
     {
       "text": "Choice text (15 words max)",
-      "consequence": "Brief description of what happens, dark humor, the user should feel guilty.",
+      "consequence": "Brief description of what happens without spoilers (10 words max)",
       "popularityChange": number,
-      "narratorResponse": "Narrator description of what happened (15 words max)"
+      "narratorResponse": "Narrator description of what happened (15 words max), dark humor, the user should feel guilty."
     }
   ]
 }
 
-Be extremely concise. Count words carefully. Medieval tone but short sentences.
+Count words carefully. Medieval tone but easy to understand.
 `
   }
 
   const parseAIResponse = (aiText, originalNPC) => {
     try {
+      console.log('AI: Parsing response:', aiText.substring(0, 200) + '...')
+      
+      // Clean the text first - remove any potential encoding issues
+      const cleanText = aiText.replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
+      
       // Try to extract JSON from the AI response
-      const jsonMatch = aiText.match(/\{[\s\S]*\}/)
+      const jsonMatch = cleanText.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
+        console.log('AI: Found JSON:', jsonMatch[0])
         const parsed = JSON.parse(jsonMatch[0])
+        
+        // Validate the parsed response
+        if (!parsed.dialogue || !parsed.choices || !Array.isArray(parsed.choices)) {
+          throw new Error('Invalid AI response format')
+        }
         
         // Ensure choices have narrator responses
         const enhancedChoices = parsed.choices?.map(choice => ({
@@ -157,16 +177,23 @@ Be extremely concise. Count words carefully. Medieval tone but short sentences.
           narratorResponse: choice.narratorResponse || generateFallbackNarrator(choice, originalNPC)
         })) || originalNPC.choices
         
-        return {
+        const result = {
           ...originalNPC,
           dialogue: parsed.dialogue || originalNPC.dialogue,
           choices: enhancedChoices
         }
+        
+        console.log('AI: Successfully parsed response:', result)
+        return result
+      } else {
+        console.warn('AI: No JSON found in response')
       }
     } catch (e) {
-      console.warn('Failed to parse AI response, using defaults')
+      console.warn('AI: Failed to parse response:', e.message)
+      console.warn('AI: Raw text was:', aiText)
     }
     
+    console.log('AI: Using fallback content')
     return originalNPC
   }
 

@@ -44,7 +44,8 @@ import ChoiceButton from './ChoiceButton.vue'
 const props = defineProps({
   currentNpc: Object,
   popularity: Number,
-  turn: Number
+  turn: Number,
+  isAiGenerated: Boolean  // Add prop to indicate if content is AI-generated
 })
 
 const emit = defineEmits(['choice-made'])
@@ -52,22 +53,48 @@ const emit = defineEmits(['choice-made'])
 const currentDialogue = ref('')
 const showChoices = ref(false)
 const dialogueIndex = ref(0)
+const isStreaming = ref(false)
+const currentAnimationId = ref(0) // Track animation instances
 
 const typewriterSpeed = 50 // milliseconds per character
 
-const typeText = async (text) => {
+const typeText = async (text, useStreaming = false) => {
+  // Increment animation ID to cancel any previous animations
+  const animationId = ++currentAnimationId.value
+  
+  // Reset state immediately
   currentDialogue.value = ''
   showChoices.value = false
+  isStreaming.value = useStreaming
   
-  for (let i = 0; i < text.length; i++) {
-    currentDialogue.value += text[i]
-    await new Promise(resolve => setTimeout(resolve, typewriterSpeed))
+  // Ensure text is a valid string and handle any encoding issues
+  const cleanText = String(text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  
+  // Convert to array to properly handle Unicode characters for both modes
+  const characters = Array.from(cleanText)
+  
+  // Use letter-by-letter for both AI and static content
+  // AI content types slightly faster for a more dynamic feel
+  const speed = useStreaming ? 30 : typewriterSpeed // AI: 30ms, Static: 50ms
+  
+  for (let i = 0; i < characters.length; i++) {
+    // Check if this animation was cancelled by a newer one
+    if (currentAnimationId.value !== animationId) return
+    
+    currentDialogue.value += characters[i]
+    await new Promise(resolve => setTimeout(resolve, speed))
   }
   
-  // Show choices after dialogue is complete
-  setTimeout(() => {
-    showChoices.value = true
-  }, 500)
+  // Check if still the current animation before showing choices
+  if (currentAnimationId.value === animationId) {
+    const delay = useStreaming ? 200 : 500 // Shorter delay for AI content
+    setTimeout(() => {
+      if (currentAnimationId.value === animationId) {
+        showChoices.value = true
+        isStreaming.value = false
+      }
+    }, delay)
+  }
 }
 
 const makeChoice = (choice) => {
@@ -77,25 +104,26 @@ const makeChoice = (choice) => {
 
 // Watch for NPC changes
 onMounted(() => {
-  if (props.currentNpc) {
-    typeText(props.currentNpc.dialogue)
+  if (props.currentNpc?.dialogue) {
+    typeText(props.currentNpc.dialogue, props.isAiGenerated)
   }
 })
 
-// Watch for NPC changes in reactive way
-const currentNpc = computed(() => props.currentNpc)
-const watchNpc = () => {
-  if (currentNpc.value) {
-    typeText(currentNpc.value.dialogue)
-  }
-}
-
 // Re-run when NPC changes
 const prevNpc = ref(null)
+const prevDialogue = ref('')
+
 const checkNpcChange = () => {
-  if (currentNpc.value && currentNpc.value !== prevNpc.value) {
-    prevNpc.value = currentNpc.value
-    typeText(currentNpc.value.dialogue)
+  if (props.currentNpc && 
+      (props.currentNpc !== prevNpc.value || 
+       props.currentNpc.dialogue !== prevDialogue.value)) {
+    
+    prevNpc.value = props.currentNpc
+    prevDialogue.value = props.currentNpc.dialogue
+    
+    if (props.currentNpc.dialogue) {
+      typeText(props.currentNpc.dialogue, props.isAiGenerated)
+    }
   }
 }
 
@@ -159,9 +187,11 @@ onMounted(() => {
 
 .dialogue-area {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  border-radius: 20px;
+  overflow: hidden;
   z-index: 20;
 }
 

@@ -1,11 +1,11 @@
 <template>
   <div class="dialogue-bubble">
-    <div class="character-info">
-      <img v-if="characterImage" :src="characterImage" :alt="speaker" class="character-image" />
-      <h3 class="speaker-name">{{ speaker }}</h3>
-    </div>
+    <img v-if="characterImage" :src="characterImage" :alt="speaker" class="character-image" />
     <div class="dialogue-text">
-      {{ text }}
+      <h3 class="speaker-name">{{ speaker }}</h3>
+      <p>
+        {{ text }}
+      </p>
     </div>
   </div>
 </template>
@@ -25,22 +25,14 @@ defineProps({
   padding: 1.5rem 2rem;
   width: 100%;
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  align-items: center;
+  gap: 2rem;
   min-height: 120px;
 }
 
-.character-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 80px;
-}
-
 .character-image {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #ffd700;
@@ -54,9 +46,12 @@ defineProps({
 }
 
 .dialogue-text {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-between;
   flex: 1;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   line-height: 1.5;
-  padding-top: 0.5rem;
 }
 </style>

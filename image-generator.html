@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Placeholder Image Generator</title>
+</head>
+<body>
+    <h1>Generate Placeholder Images</h1>
+    <button onclick="generateAllImages()">Generate All Images</button>
+    <div id="output"></div>
+
+    <script>
+        const createPlaceholderImage = (width, height, color, text) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, color);
+            gradient.addColorStop(1, adjustBrightness(color, -30));
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Text shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.font = `bold ${Math.min(width, height) / 8}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, width / 2 + 2, height / 2 + 2);
+            
+            // Text
+            ctx.fillStyle = 'white';
+            ctx.fillText(text, width / 2, height / 2);
+            
+            return canvas.toDataURL('image/jpeg', 0.9);
+        };
+
+        const adjustBrightness = (hex, percent) => {
+            const num = parseInt(hex.replace("#", ""), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+        };
+
+        const downloadImage = (dataUrl, filename) => {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = dataUrl;
+            link.click();
+        };
+
+        const placeholderData = {
+            characters: [
+                ['farmer.jpg', '#8B4513', 'Farmer John'],
+                ['merchant.jpg', '#FFD700', 'Merchant Elena'],
+                ['noble.jpg', '#800080', 'Lord Blackwood'],
+                ['priest.jpg', '#4682B4', 'Father Marcus'],
+                ['captain.jpg', '#DC143C', 'Captain Steel'],
+                ['witch.jpg', '#4B0082', 'Morgana'],
+                ['orphan.jpg', '#696969', 'Little Tim'],
+                ['ambassador.jpg', '#0000CD', 'Ambassador'],
+                ['healer.jpg', '#228B22', 'Healer Anne'],
+                ['blacksmith.jpg', '#2F4F4F', 'Blacksmith'],
+                ['scholar.jpg', '#9370DB', 'Scholar Livia'],
+                ['spy.jpg', '#000000', 'The Crow'],
+                ['bard.jpg', '#FF8C00', 'Bard Felix'],
+                ['ghost.jpg', '#E6E6FA', 'Old King'],
+                ['dragon.jpg', '#FF4500', 'Dragon Envoy']
+            ],
+            backgrounds: [
+                ['throne-room.jpg', '#8B0000', 'Royal Throne Room'],
+                ['farmland.jpg', '#228B22', 'Peaceful Farmland'],
+                ['marketplace.jpg', '#DAA520', 'Bustling Market'],
+                ['castle_hall.jpg', '#708090', 'Noble Castle Hall'],
+                ['cathedral.jpg', '#F5F5DC', 'Sacred Cathedral'],
+                ['barracks.jpg', '#8B4513', 'Military Barracks'],
+                ['forest.jpg', '#006400', 'Mystical Forest'],
+                ['slums.jpg', '#696969', 'Poor District'],
+                ['embassy.jpg', '#4169E1', 'Foreign Embassy'],
+                ['infirmary.jpg', '#98FB98', 'Healing Infirmary'],
+                ['forge.jpg', '#FF6347', 'Blazing Forge'],
+                ['library.jpg', '#DDA0DD', 'Ancient Library'],
+                ['shadows.jpg', '#2F4F4F', 'Dark Shadows'],
+                ['tavern.jpg', '#CD853F', 'Lively Tavern'],
+                ['throne_room_night.jpg', '#191970', 'Throne at Night'],
+                ['mountain.jpg', '#A0522D', 'Dragon Mountain'],
+                ['ending.jpg', '#4B0082', 'The End']
+            ]
+        };
+
+        const generateAllImages = () => {
+            const output = document.getElementById('output');
+            output.innerHTML = '<h2>Character Images (200x200)</h2>';
+            
+            placeholderData.characters.forEach(([filename, color, text]) => {
+                const dataUrl = createPlaceholderImage(200, 200, color, text);
+                const img = document.createElement('img');
+                img.src = dataUrl;
+                img.style.margin = '5px';
+                img.style.border = '2px solid #ccc';
+                img.onclick = () => downloadImage(dataUrl, filename);
+                img.title = `Click to download ${filename}`;
+                output.appendChild(img);
+            });
+
+            output.innerHTML += '<h2>Background Images (1920x1080)</h2>';
+            
+            placeholderData.backgrounds.forEach(([filename, color, text]) => {
+                const dataUrl = createPlaceholderImage(1920, 1080, color, text);
+                const img = document.createElement('img');
+                img.src = dataUrl;
+                img.style.maxWidth = '300px';
+                img.style.margin = '5px';
+                img.style.border = '2px solid #ccc';
+                img.onclick = () => downloadImage(dataUrl, filename);
+                img.title = `Click to download ${filename}`;
+                output.appendChild(img);
+            });
+
+            output.innerHTML += '<p><strong>Click on any image to download it!</strong></p>';
+        };
+    </script>
+</body>
+</html>

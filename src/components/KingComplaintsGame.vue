@@ -20,12 +20,23 @@
       
       <!-- Main Game Screen -->
       <GameScreen
-        v-else-if="gameState === 'playing'"
+        v-else-if="gameState === 'playing' && !showingNarratorResponse"
         :current-npc="currentNPC"
         :popularity="popularity"
         :turn="currentTurn"
         @choice-made="handleChoice"
       />
+      
+      <!-- Narrator Response Overlay -->
+      <div v-if="showingNarratorResponse" class="narrator-overlay">
+        <div class="narrator-content">
+          <h3 class="narrator-title">The Kingdom Reacts</h3>
+          <p class="narrator-text">{{ currentNarratorText }}</p>
+          <GameButton @click="continueGame" class="continue-button">
+            Continue
+          </GameButton>
+        </div>
+      </div>
       
       <!-- End Screen -->
       <EndScreen
@@ -39,11 +50,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import ApiKeyConfig from './ApiKeyConfig.vue'
 import IntroScreen from './IntroScreen.vue'
 import GameScreen from './GameScreen.vue'
 import EndScreen from './EndScreen.vue'
+import GameButton from './GameButton.vue'
 import { useGameState } from '../composables/useGameState'
 import { useAI } from '../composables/useAI'
 
@@ -59,10 +71,17 @@ const {
   processChoice
 } = useGameState()
 
-const { generateNPCContent } = useAI()
+const { generateNPCContent, hasApiKey } = useAI()
+
+// Check if API is already configured on mount
+onMounted(() => {
+  apiConfigured.value = hasApiKey()
+})
 
 const currentNPC = ref(null)
 const endingType = ref('') // 'rebellion', 'victory', 'neutral'
+const showingNarratorResponse = ref(false)
+const currentNarratorText = ref('')
 
 const currentBackground = computed(() => {
   if (gameState.value === 'intro') return '/images/backgrounds/throne-room.svg'
@@ -82,6 +101,8 @@ const loadNextNPC = async () => {
     return
   }
   
+  console.log('Loading NPC:', npcData.name, 'AI configured:', apiConfigured.value)
+  
   // Generate dynamic content with AI
   const enhancedNPC = await generateNPCContent(npcData, actionHistory.value)
   currentNPC.value = enhancedNPC
@@ -90,6 +111,10 @@ const loadNextNPC = async () => {
 const handleChoice = async (choice) => {
   const result = processChoice(choice, currentNPC.value)
   
+  // Show narrator response
+  currentNarratorText.value = choice.narratorResponse || generateDefaultNarrator(choice, result)
+  showingNarratorResponse.value = true
+  
   // Add action to history
   addAction({
     turn: currentTurn.value,
@@ -97,6 +122,20 @@ const handleChoice = async (choice) => {
     choice: choice,
     popularityChange: result.popularityChange
   })
+}
+
+const generateDefaultNarrator = (choice, result) => {
+  if (result.popularityChange > 5) {
+    return "Your wise decision strengthens the kingdom's unity."
+  } else if (result.popularityChange < -5) {
+    return "Whispers of discontent spread through the realm."
+  } else {
+    return "The kingdom watches and waits for your next move."
+  }
+}
+
+const continueGame = async () => {
+  showingNarratorResponse.value = false
   
   // Check game over conditions
   if (popularity.value <= 0) {
@@ -170,5 +209,48 @@ const restart = () => {
       rgba(255,255,255,0.1) 2px,
       rgba(255,255,255,0.1) 4px
     );
+}
+
+.narrator-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.narrator-content {
+  background: rgba(20, 20, 30, 0.95);
+  padding: 3rem;
+  border-radius: 15px;
+  border: 2px solid #ffd700;
+  max-width: 600px;
+  text-align: center;
+}
+
+.narrator-title {
+  color: #ffd700;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.narrator-text {
+  color: #e0e0e0;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.continue-button {
+  background: rgba(255, 215, 0, 0.9);
+  color: #000;
+  font-weight: bold;
 }
 </style>

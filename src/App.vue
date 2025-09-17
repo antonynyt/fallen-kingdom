@@ -5,6 +5,3 @@ import KingComplaintsGame from './components/KingComplaintsGame.vue'
 <template>
     <KingComplaintsGame />
 </template>
-
-<style>
-</style>

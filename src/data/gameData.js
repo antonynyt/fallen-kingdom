@@ -7,25 +7,28 @@ export const gameData = {
       image: '/images/characters/farmer.svg',
       background: '/images/backgrounds/farmland.svg',
       baseComplaint: 'The taxes are crushing us, Your Majesty! We can barely feed our families.',
-      dialogue: 'Your Majesty, I come before you with a heavy heart. The tax collectors have taken nearly everything we harvested this season. My children go to bed hungry while the nobles feast in their castles. Please, show mercy to your people!',
+      dialogue: 'Your Majesty, taxes crush us! Children starve while nobles feast. Please show mercy!',
       choices: [
         {
-          text: 'Reduce taxes by half for peasants',
+          text: 'Cut peasant taxes in half',
           consequence: 'The peasants cheer your name, but the treasury suffers',
           popularityChange: 10,
-          type: 'merciful'
+          type: 'merciful',
+          narratorResponse: 'Word spreads of your mercy. Peasants work harder, nobles grumble.'
         },
         {
-          text: 'Maintain current taxes for kingdom stability',
+          text: 'Keep current tax rates',
           consequence: 'The farmer leaves disappointed, but the nobles approve',
           popularityChange: -5,
-          type: 'neutral'
+          type: 'neutral',
+          narratorResponse: 'A pragmatic choice. The kingdom remains stable, tensions simmer.'
         },
         {
-          text: 'Increase taxes to fund military expansion',
+          text: 'Raise taxes for military expansion',
           consequence: 'The farmer protests, and word spreads of your cruelty',
           popularityChange: -15,
-          type: 'harsh'
+          type: 'harsh',
+          narratorResponse: 'Your harsh decree echoes through villages. Fear replaces respect.'
         }
       ],
       relationships: []
@@ -37,25 +40,28 @@ export const gameData = {
       image: '/images/characters/merchant.svg',
       background: '/images/backgrounds/marketplace.svg',
       baseComplaint: 'Bandits plague the trade routes, killing commerce!',
-      dialogue: 'Your Majesty, the trade routes are no longer safe! Bandits attack our caravans daily. My last shipment was completely lost, and three of my guards were killed. Without safe passage, commerce will die, and with it, the prosperity of your kingdom!',
+      dialogue: 'Trade routes crawl with bandits! Three guards dead, cargo lost. Commerce dies without protection!',
       choices: [
         {
-          text: 'Deploy royal guards to patrol trade routes',
+          text: 'Send royal guards to patrol routes',
           consequence: 'Trade flourishes, but military resources are stretched thin',
           popularityChange: 8,
-          type: 'protective'
+          type: 'protective',
+          narratorResponse: 'Merchants smile as coins flow freely. Your armies are spread thin.'
         },
         {
-          text: 'Hire mercenaries to clear the roads',
+          text: 'Hire mercenaries for road clearing',
           consequence: 'Roads become safer, but it costs a fortune',
           popularityChange: 5,
-          type: 'neutral'
+          type: 'neutral',
+          narratorResponse: 'Gold buys safety. Your treasury lightens as trade resumes.'
         },
         {
-          text: 'Tell merchants to hire their own protection',
+          text: 'Merchants must protect themselves',
           consequence: 'Elena is outraged, and trade begins to suffer',
           popularityChange: -12,
-          type: 'dismissive'
+          type: 'dismissive',
+          narratorResponse: 'Merchants whisper of abandonment. Commerce slows to a crawl.'
         }
       ],
       relationships: [

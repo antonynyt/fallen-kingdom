@@ -20,17 +20,30 @@
           <p><strong>Optional:</strong> The game works without an API key using predefined content.</p>
           <p>With AI: NPCs react dynamically to your past decisions</p>
           <p>Without AI: NPCs use static but engaging dialogue</p>
+          <details>
+            <summary>How to get a Gemini API key</summary>
+            <ol>
+              <li>Go to <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a></li>
+              <li>Sign in with your Google account</li>
+              <li>Click "Get API key" in the top menu</li>
+              <li>Copy the generated key and paste it above</li>
+            </ol>
+            <p><small>Note: You may need to enable billing for the Gemini API in Google Cloud Console.</small></p>
+          </details>
         </div>
-        <GameButton @click="skipApiKey" class="skip-button">
+                <GameButton @click="skipApiKey" class="skip-button">
           Skip AI Integration
         </GameButton>
+        <div class="debug-section" v-if="isDev">
+          <small>Debug: <button @click="clearApiKey" style="font-size: 10px;">Clear stored API key</button></small>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import GameButton from './GameButton.vue'
 import { useAI } from '../composables/useAI'
 
@@ -39,6 +52,7 @@ const emit = defineEmits(['configured'])
 const { setApiKey } = useAI()
 const apiKeyInput = ref('')
 const hasApiKey = ref(false)
+const isDev = computed(() => process.env.NODE_ENV === 'development')
 
 onMounted(() => {
   // Check if API key is already stored
@@ -52,7 +66,6 @@ onMounted(() => {
 
 const saveApiKey = () => {
   if (apiKeyInput.value.trim()) {
-    localStorage.setItem('gemini_api_key', apiKeyInput.value.trim())
     setApiKey(apiKeyInput.value.trim())
     hasApiKey.value = true
     emit('configured')
@@ -62,6 +75,13 @@ const saveApiKey = () => {
 const skipApiKey = () => {
   hasApiKey.value = true
   emit('configured')
+}
+
+const clearApiKey = () => {
+  localStorage.removeItem('gemini_api_key')
+  setApiKey('')
+  hasApiKey.value = false
+  apiKeyInput.value = ''
 }
 </script>
 
@@ -130,6 +150,28 @@ const skipApiKey = () => {
 
 .help-text p {
   margin-bottom: 0.5rem;
+}
+
+.help-text details {
+  text-align: left;
+  margin-top: 1rem;
+}
+
+.help-text summary {
+  cursor: pointer;
+  color: #ffd700;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.help-text ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.help-text a {
+  color: #ffd700;
+  text-decoration: underline;
 }
 
 .skip-button {

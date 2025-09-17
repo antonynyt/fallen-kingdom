@@ -56,11 +56,12 @@ defineEmits(['start-game'])
 }
 
 .intro-text p {
-  margin-bottom: 1rem;
+  margin-bottom: 0.1em;
 }
 
 .start-button {
   font-size: 1.5rem;
   padding: 1rem 2rem;
+  margin-top: 2rem;
 }
 </style>

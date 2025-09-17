@@ -526,7 +526,106 @@ export const gameData = {
           modifier: 'Economic policies affect dragon territory conflicts'
         }
       ],
-      minTurn: 13
+      minTurn: 7
+    },
+    {
+      id: 'mysterious_stranger',
+      name: 'The Hooded Stranger',
+      role: 'Unknown',
+      image: '/images/characters/spy.svg',
+      background: '/images/backgrounds/shadows.svg',
+      baseComplaint: 'Dark forces gather beyond the borders',
+      dialogue: 'Your Majesty... shadows move in the realm. Something wicked approaches.',
+      choices: [
+        {
+          text: 'Investigate the threat immediately',
+          consequence: 'You discover disturbing truths',
+          popularityChange: -5,
+          type: 'investigative',
+          narratorResponse: 'Knowledge comes with a terrible price. Sleep eludes you.'
+        },
+        {
+          text: 'Ignore mysterious warnings',
+          consequence: 'The stranger vanishes with ominous laughter',
+          popularityChange: 0,
+          type: 'dismissive',
+          narratorResponse: 'Sometimes ignorance feels like bliss. For now.'
+        },
+        {
+          text: 'Arrest the suspicious figure',
+          consequence: 'The stranger disappears like smoke',
+          popularityChange: -3,
+          type: 'aggressive',
+          narratorResponse: 'Your guards grasp only air. Whispers follow you.'
+        }
+      ],
+      relationships: []
+    },
+    {
+      id: 'time_traveler',
+      name: 'Sage Chronos',
+      role: 'Oracle',
+      image: '/images/characters/scholar.svg',
+      background: '/images/backgrounds/library.svg',
+      baseComplaint: 'The timeline fractures with your choices',
+      dialogue: 'King! I have seen futures... terrible futures born from this moment.',
+      choices: [
+        {
+          text: 'Learn what futures await',
+          consequence: 'Terrible knowledge burdens your soul',
+          popularityChange: -8,
+          type: 'enlightened',
+          narratorResponse: 'The weight of destiny crushes hope. Knowledge is suffering.'
+        },
+        {
+          text: 'Choose your own fate blindly',
+          consequence: 'You reject predestination boldly',
+          popularityChange: 5,
+          type: 'defiant',
+          narratorResponse: 'Free will burns bright. The future remains unwritten.'
+        },
+        {
+          text: 'Banish the oracle immediately',
+          consequence: 'Time itself seems to shudder',
+          popularityChange: -2,
+          type: 'rejecting',
+          narratorResponse: 'Some messengers should not be silenced. Reality trembles.'
+        }
+      ],
+      relationships: []
+    },
+    {
+      id: 'plague_doctor',
+      name: 'Dr. Mortis',
+      role: 'Physician',
+      image: '/images/characters/healer.svg',
+      background: '/images/backgrounds/infirmary.svg',
+      baseComplaint: 'A new plague spreads through the kingdom',
+      dialogue: 'Majesty! A strange sickness spreads. Bodies pile high in distant villages.',
+      choices: [
+        {
+          text: 'Quarantine all affected areas immediately',
+          consequence: 'Villages are sealed, families separated',
+          popularityChange: -10,
+          type: 'authoritarian',
+          narratorResponse: 'Isolation saves many, destroys others. Screams haunt the wind.'
+        },
+        {
+          text: 'Send healers and supplies freely',
+          consequence: 'Disease spreads but people feel cared for',
+          popularityChange: 8,
+          type: 'compassionate',
+          narratorResponse: 'Love in the face of death. Heroes emerge from tragedy.'
+        },
+        {
+          text: 'Hide the plague from public knowledge',
+          consequence: 'Panic is avoided but trust will shatter',
+          popularityChange: 3,
+          type: 'secretive',
+          narratorResponse: 'Truth has a way of surfacing. The lie grows heavier.'
+        }
+      ],
+      relationships: []
     }
   ]
 }

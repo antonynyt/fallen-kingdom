@@ -148,7 +148,7 @@ const handleChoice = async (choice) => {
   }
   
   // Start countdown
-  narratorCountdown.value = 5
+  narratorCountdown.value = 10
   
   // Start loading next NPC in background
   loadNextNPCInBackground()
@@ -178,7 +178,7 @@ const generateDefaultNarrator = (choice, result) => {
 
 const loadNextNPCInBackground = async () => {
   // Check game over conditions first
-  if (popularity.value <= 0 || currentTurn.value >= 15) {
+  if (popularity.value <= 0 || currentTurn.value >= 8) {
     nextNPCReady.value = null
     return
   }
@@ -224,7 +224,7 @@ const continueGame = async () => {
     return
   }
   
-  if (currentTurn.value >= 15) {
+  if (currentTurn.value >= 8) {
     endGame(popularity.value >= 70 ? 'victory' : 'neutral')
     return
   }

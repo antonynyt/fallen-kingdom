@@ -54,11 +54,11 @@ export function useAI() {
               }]
             }],
             generationConfig: {
-              temperature: 0.7,  // Reduced for more consistent responses
-              topK: 40,          // Reduced for more focused responses
-              topP: 0.8,         // Reduced for more consistent responses
-              maxOutputTokens: 512,  // Reduced since we want short responses
-              candidateCount: 1   // Ensure single response
+              temperature: 1.0,  // Increased for more creativity and randomness
+              topK: 40,          // Increased for more diverse word choices
+              topP: 0.95,        // High value for more creative responses
+              maxOutputTokens: 512,
+              candidateCount: 1
             }
           })
         }
@@ -115,41 +115,76 @@ export function useAI() {
   }
 
   const buildPrompt = (npcData, context) => {
+    // Add random elements to make each generation unique
+    const randomEvents = [
+      'a meteor has fallen nearby',
+      'strange dreams plague the kingdom',
+      'animals speak prophecies',
+      'the dead have been restless',
+      'magic flows chaotically',
+      'time moves strangely',
+      'the seasons have reversed',
+      'ancient curses awaken',
+      'gods walk among mortals',
+      'reality itself seems unstable'
+    ]
+    
+    const randomComplications = [
+      'but a terrible price must be paid',
+      'yet dark forces manipulate events',
+      'while ancient prophecies unfold',
+      'as reality tears at the seams',
+      'though the gods demand sacrifice',
+      'but the cure is worse than the disease',
+      'while time runs out',
+      'as chaos spreads unchecked',
+      'yet hope dies with each choice',
+      'but madness seeps into reason'
+    ]
+    
+    const randomEvent = randomEvents[Math.floor(Math.random() * randomEvents.length)]
+    const randomComplication = randomComplications[Math.floor(Math.random() * randomComplications.length)]
+    
     return `
-You are generating content for a medieval fantasy game where a new king must handle complaints from his subjects.
+You are a darkly humorous storyteller generating content for a medieval fantasy kingdom simulation. 
+The new king faces morally complex dilemmas where every choice has terrible consequences.
 
-NPC Information:
-- Name: ${npcData.name}
-- Role: ${npcData.role}
-- Base Complaint: ${npcData.baseComplaint}
+Starting Point:
+- Character: ${npcData.name} (${npcData.role})
+- Base Issue: ${npcData.baseComplaint}
+- Kingdom Popularity: ${context.currentPopularity}%
+- Past Royal Decisions: ${JSON.stringify(context.pastActions)}
 
-Game Context:
-- Current King's Popularity: ${context.currentPopularity}%
-- Relevant Past Actions: ${JSON.stringify(context.pastActions)}
+RANDOM ELEMENT TO INCORPORATE: ${randomEvent}
+STORY COMPLICATION: ${randomComplication}
 
-STRICT REQUIREMENTS:
-USE SIMPLE LANGUAGE
-1. Generate a dialogue that reflects the NPC's personality and their complaint.
-2. Consider how past royal decisions might have affected this character
-3. Choice text: MAXIMUM 10 words each - short and clear
-4. Create 3 distinct choice options for the king, each with different consequences
-5. Each choice should have a popularity impact (-15 to +15)
-6. Keep the tone medieval but accessible
+DARK HUMOR GUIDELINES:
+🖤 EMBRACE DARK COMEDY: Make situations absurdly tragic or ironically twisted
+💀 MORBID IRONY: Characters should face grimly humorous predicaments
+� GALLOWS HUMOR: Find comedy in desperate situations
+🔥 CYNICAL TONE: Present choices where all outcomes are somewhat terrible
+� CHAOTIC CONSEQUENCES: Even "good" choices should have dark undertones
 
-Format your response as JSON:
+CREATIVE FREEDOM:
+- Transform scenarios based on past events with dark twists
+- Add unexpected tragic-comic elements
+- Show how past decisions created darkly ironic situations
+- Make moral choices where righteousness leads to suffering
+
+FORMAT:
 {
-  "dialogue": "Character's complaint in 50 words or less",
+  "dialogue": "Character's darkly humorous situation (MAX 50 words) - be grimly entertaining, dialogue only no narration nor name of the speaker nor special characters",
   "choices": [
     {
-      "text": "Choice text (15 words max)",
-      "consequence": "Brief description of what happens without spoilers (10 words max)",
-      "popularityChange": number,
-      "narratorResponse": "Narrator description of what happened (15 words max), dark humor, the user should feel guilty."
+      "text": "Action choice (10 words max)",
+      "consequence": "Darkly ironic outcome (5 words max)",
+      "popularityChange": number (-20 to +20) based on how absurdly good or bad the choice is,
+      "narratorResponse": "Grimly humorous consequence (20 words max)"
     }
   ]
 }
 
-Count words carefully. Medieval tone but easy to understand.
+MAKE IT DARKLY FUNNY! Every situation should be tragically absurd! use simple language for non native speakers.
 `
   }
 
@@ -162,9 +197,16 @@ Count words carefully. Medieval tone but easy to understand.
       
       // Try to extract JSON from the AI response
       const jsonMatch = cleanText.match(/\{[\s\S]*\}/)
-      if (jsonMatch) {
-        console.log('AI: Found JSON:', jsonMatch[0])
-        const parsed = JSON.parse(jsonMatch[0])
+      
+      // Fix invalid JSON with unary plus operators
+      let jsonText = jsonMatch ? jsonMatch[0] : null
+      if (jsonText) {
+        // Remove unary plus operators that make JSON invalid
+        jsonText = jsonText.replace(/:\s*\+(\d+)/g, ': $1')
+      }
+      if (jsonText) {
+        console.log('AI: Found JSON:', jsonText)
+        const parsed = JSON.parse(jsonText)
         
         // Validate the parsed response
         if (!parsed.dialogue || !parsed.choices || !Array.isArray(parsed.choices)) {

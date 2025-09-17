@@ -10,7 +10,7 @@
             <div class="meter-fill" :style="{ width: popularity + '%' }"></div>
           </div>
         </div>
-        <div class="turn-counter">Turn {{ turn }}/15</div>
+        <div class="turn-counter">Turn {{ turn }}/8</div>
       </div>
     </div>
 
@@ -56,7 +56,7 @@ const dialogueIndex = ref(0)
 const isStreaming = ref(false)
 const currentAnimationId = ref(0) // Track animation instances
 
-const typewriterSpeed = 50 // milliseconds per character
+const typewriterSpeed = 10 // milliseconds per character
 
 const typeText = async (text, useStreaming = false) => {
   // Increment animation ID to cancel any previous animations

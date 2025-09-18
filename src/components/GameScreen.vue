@@ -12,7 +12,7 @@
         </div>
         <div class="status-actions">
           <button class="characters-button" @click="showCharacterStatus = true" title="View Characters">
-            👥 Characters
+            Characters
           </button>
         </div>
         <div class="turn-counter">Turn {{ turn }}/8</div>
@@ -172,8 +172,8 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
+  background: #FFDEA9;
+  color: #3e2a0f;
 }
 
 .status-actions {
@@ -182,23 +182,17 @@ onMounted(() => {
 }
 
 .characters-button {
-  background: rgba(255, 215, 0, 0.2);
-  border: 1px solid #ffd700;
-  color: #ffd700;
+  background: #3e2a0f;
+  color: #fff;
   padding: 0.5rem 1rem;
+  border: 0;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1rem;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.characters-button:hover {
-  background: rgba(255, 215, 0, 0.4);
-  color: white;
-  transform: translateY(-1px);
 }
 
 .popularity-meter {
@@ -210,14 +204,14 @@ onMounted(() => {
 .meter {
   width: 200px;
   height: 20px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(255 252 246);
   border-radius: 10px;
   overflow: hidden;
 }
 
 .meter-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff4444 0%, #ffff44 50%, #44ff44 100%);
+  background-color: #3e2a0f;
   transition: width 0.5s ease;
 }
 

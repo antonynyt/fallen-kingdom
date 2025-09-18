@@ -29,21 +29,17 @@
         @choice-made="handleChoice"
       />
       
-      <!-- Narrator Response Overlay -->
-      <div v-if="showingNarratorResponse" class="narrator-overlay">
-        <div class="narrator-content">
-          <h3 class="narrator-title">The Kingdom Reacts</h3>
-          <p class="narrator-text">{{ currentNarratorText }}</p>
-          <div class="narrator-actions">
-            <GameButton @click="continueGame" class="continue-button">
-              Continue
-            </GameButton>
-            <div class="countdown-timer">
-              Auto-continue in {{ narratorCountdown }}s
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Enhanced Narrator Response Overlay -->
+      <NarratorResponse
+        v-if="showingNarratorResponse"
+        :consequence-data="lastChoiceConsequence"
+        :character-actions="lastCharacterActions"
+        :narrator-text="currentNarratorText"
+        :story-theme-changes="storyThemeChanges"
+        :new-story-arcs="newStoryArcs"
+        :countdown="narratorCountdown"
+        @continue="continueGame"
+      />
       
       <!-- End Screen -->
       <EndScreen
@@ -63,6 +59,7 @@ import IntroScreen from './IntroScreen.vue'
 import GameScreen from './GameScreen.vue'
 import EndScreen from './EndScreen.vue'
 import GameButton from './GameButton.vue'
+import NarratorResponse from './NarratorResponse.vue'
 import { useGameState } from '../composables/useGameState'
 import { useAI } from '../composables/useAI'
 
@@ -73,6 +70,10 @@ const {
   currentTurn, 
   actionHistory, 
   characters,
+  storyThemes,
+  storyArcs,
+  activeConflicts,
+  worldEvents,
   addAction, 
   resetGame,
   getCurrentNPC,
@@ -80,7 +81,9 @@ const {
   addAIGeneratedCharacter,
   getAllCharacters,
   executeImmediateCharacterActions,
-  executeChoiceCharacterActions
+  executeChoiceCharacterActions,
+  getStoryState,
+  getDominantTheme
 } = useGameState()
 
 const { generateNPCContent, hasApiKey } = useAI()
@@ -99,6 +102,17 @@ const nextNPCReady = ref(null) // Store the next NPC while narrator is showing
 const narratorTimer = ref(null)
 const narratorCountdown = ref(10)
 
+// New reactive properties for enhanced narrator
+const lastChoiceConsequence = ref({
+  type: 'neutral', // 'death', 'rebellion', 'positive', 'neutral'
+  popularityChange: 0,
+  severity: 'low' // 'low', 'medium', 'high', 'extreme'
+})
+const lastCharacterActions = ref([])
+const storyThemeChanges = ref([])
+const newStoryArcs = ref([])
+const previousStoryState = ref(null)
+
 const currentBackground = computed(() => {
   if (gameState.value === 'intro') return '/images/backgrounds/throne-room.jpg'
   if (gameState.value === 'ended') return '/images/backgrounds/ending.svg'
@@ -107,6 +121,7 @@ const currentBackground = computed(() => {
 
 const startGame = async () => {
   gameState.value = 'playing'
+  previousStoryState.value = getStoryState()
   await loadNextNPC()
 }
 
@@ -147,26 +162,25 @@ const loadNextNPC = async () => {
 
 const handleChoice = async (choice) => {
   const result = processChoice(choice, currentNPC.value)
-  
-  // Find the choice index for character actions
   const choiceIndex = currentNPC.value.choices?.findIndex(c => c.text === choice.text) ?? -1
+  
+  // Store previous state for comparison
+  const prevStoryState = { ...getStoryState() }
+  const prevStoryArcsCount = storyArcs.value.length
   
   // Execute choice-triggered character actions
   const characterActions = executeChoiceCharacterActions(currentNPC.value, choiceIndex)
+  lastCharacterActions.value = characterActions
+  
+  // Analyze consequence type and severity
+  analyzeConsequences(choice, result, characterActions)
+  
+  // Detect story changes
+  detectStoryChanges(prevStoryState)
+  
+  // Enhanced narrator text with character actions
   if (characterActions.length > 0) {
-    console.log('Executing choice character actions:', characterActions)
-    // Enhance narrator response with character action descriptions
-    const actionDescriptions = characterActions.map(action => {
-      switch (action.type) {
-        case 'death': return `${action.characterName} has died: ${action.reason}`
-        case 'create': return `A new ${action.characterRole} named ${action.characterName} appears: ${action.reason}`
-        case 'exile': return `${action.characterName} has been exiled: ${action.reason}`
-        case 'modify': return `${action.characterName} has changed: ${action.reason}`
-        default: return `Something happened to ${action.characterName}: ${action.reason}`
-      }
-    }).join('. ')
-    
-    // Append character actions to narrator response
+    const actionDescriptions = characterActions.map(action => formatActionDescription(action)).join('. ')
     const originalNarrator = choice.narratorResponse || generateDefaultNarrator(choice, result)
     currentNarratorText.value = `${originalNarrator} ${actionDescriptions}`
   } else {
@@ -179,7 +193,7 @@ const handleChoice = async (choice) => {
     npc: currentNPC.value.id,
     choice: choice,
     popularityChange: result.popularityChange,
-    characterActions: characterActions // Track what character actions happened
+    characterActions: characterActions
   })
   
   showingNarratorResponse.value = true
@@ -189,23 +203,113 @@ const handleChoice = async (choice) => {
     clearTimeout(narratorTimer.value)
   }
   
-  // Start countdown
-  narratorCountdown.value = 10
+  // Start countdown (longer for more severe consequences)
+  const baseTime = lastChoiceConsequence.value.severity === 'extreme' ? 15 : 
+                   lastChoiceConsequence.value.severity === 'high' ? 12 : 10
+  narratorCountdown.value = baseTime
   
   // Start loading next NPC in background
   loadNextNPCInBackground()
   
-  // Countdown timer
+  // Countdown timer for button enabling only (no auto-continue)
   const countdownInterval = setInterval(() => {
     narratorCountdown.value--
     if (narratorCountdown.value <= 0) {
       clearInterval(countdownInterval)
-      continueGame()
+      narratorTimer.value = null
     }
   }, 1000)
   
-  // Store interval reference for cleanup
   narratorTimer.value = countdownInterval
+}
+
+const analyzeConsequences = (choice, result, characterActions) => {
+  let severity = 'low'
+  let type = 'neutral'
+  
+  // Check for deaths
+  const deaths = characterActions.filter(a => a.type === 'death')
+  if (deaths.length > 0) {
+    type = 'death'
+    severity = deaths.length > 1 ? 'extreme' : 'high'
+  }
+  
+  // Check for rebellions/major conflicts
+  const conflicts = characterActions.filter(a => a.reason?.toLowerCase().includes('rebellion') || 
+                                                 a.reason?.toLowerCase().includes('revolt'))
+  if (conflicts.length > 0) {
+    type = 'rebellion'
+    severity = 'extreme'
+  }
+  
+  // Check popularity changes
+  const popChange = Math.abs(result.popularityChange)
+  if (popChange >= 15) {
+    severity = 'extreme'
+    type = result.popularityChange > 0 ? 'positive' : 'negative'
+  } else if (popChange >= 10) {
+    severity = 'high'
+    type = result.popularityChange > 0 ? 'positive' : 'negative'
+  } else if (popChange >= 5) {
+    severity = 'medium'
+  }
+  
+  // Check for multiple character actions
+  if (characterActions.length > 2) {
+    severity = severity === 'low' ? 'medium' : severity
+  }
+  
+  lastChoiceConsequence.value = {
+    type,
+    popularityChange: result.popularityChange,
+    severity
+  }
+}
+
+const detectStoryChanges = (prevState) => {
+  const currentState = getStoryState()
+  
+  // Detect theme changes
+  storyThemeChanges.value = []
+  Object.keys(currentState.themes).forEach(theme => {
+    const prev = prevState.themes[theme] || 0
+    const current = currentState.themes[theme] || 0
+    const diff = Math.abs(current - prev)
+    
+    if (diff >= 2) {
+      storyThemeChanges.value.push({
+        theme: theme.charAt(0).toUpperCase() + theme.slice(1),
+        direction: current > prev ? 'increase' : 'decrease',
+        amount: Math.round(diff)
+      })
+    }
+  })
+  
+  // Detect new story arcs
+  newStoryArcs.value = currentState.arcs.filter(arc => 
+    !prevState.arcs.some(prevArc => prevArc.type === arc.type)
+  )
+}
+
+const formatActionDescription = (action) => {
+  const icon = getActionIcon(action.type)
+  switch (action.type) {
+    case 'death': return `${icon} ${action.characterName} has perished: ${action.reason}`
+    case 'create': return `${icon} ${action.characterName} (${action.characterRole}) emerges: ${action.reason}`
+    case 'exile': return `${icon} ${action.characterName} has been banished: ${action.reason}`
+    case 'modify': return `${icon} ${action.characterName} changes: ${action.reason}`
+    default: return `${icon} ${action.characterName}: ${action.reason}`
+  }
+}
+
+const getActionIcon = (actionType) => {
+  switch (actionType) {
+    case 'death': return '💀'
+    case 'create': return '👤'
+    case 'exile': return '🚪'
+    case 'modify': return '🔄'
+    default: return '⚡'
+  }
 }
 
 const generateDefaultNarrator = (choice, result) => {
@@ -272,6 +376,11 @@ const continueGame = async () => {
   
   showingNarratorResponse.value = false
   
+  // Reset consequence tracking
+  lastCharacterActions.value = []
+  storyThemeChanges.value = []
+  newStoryArcs.value = []
+  
   // Check game over conditions
   if (popularity.value <= 0) {
     endGame('rebellion')
@@ -305,6 +414,10 @@ const restart = () => {
   gameState.value = 'intro'
   currentNPC.value = null
   endingType.value = ''
+  lastChoiceConsequence.value = { type: 'neutral', popularityChange: 0, severity: 'low' }
+  lastCharacterActions.value = []
+  storyThemeChanges.value = []
+  newStoryArcs.value = []
 }
 </script>
 

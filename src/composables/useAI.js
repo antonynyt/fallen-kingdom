@@ -131,33 +131,31 @@ export function useAI() {
       'a falling star struck nearby',
       'strange dreams plague the kingdom',
       'animals act strangely',
-      'the dead seem restless',
       'magic flows wildly',
       'time feels different',
-      'the seasons changed suddenly',
       'old curses awaken',
       'gods walk among us',
       'the world seems mad'
     ]
     
     const randomComplications = [
-      'but a terrible price must be paid',
-      'yet dark forces interfere',
-      'while ancient prophecies unfold',
-      'as reality tears apart',
-      'though the gods demand sacrifice',
-      'but the cure brings worse problems',
-      'while time runs out',
-      'as chaos spreads everywhere',
-      'yet hope dies with each choice',
-      'but madness creeps in'
+      'a trusted ally betrays you',
+      'a natural disaster strikes',
+      'a plague spreads rapidly',
+      'a rebellion ignites',
+      'an assassination attempt fails',
+      'a prophecy is revealed',
+      'a powerful artifact is stolen',
+      'a foreign army invades',
+      'a secret society emerges',
+      'a forbidden romance blooms'
     ]
     
     const randomEvent = randomEvents[Math.floor(Math.random() * randomEvents.length)]
     const randomComplication = randomComplications[Math.floor(Math.random() * randomComplications.length)]
     
     return `
-You are a darkly humorous storyteller for a medieval kingdom game where the new king faces terrible choices.
+You are a darkly humorous storyteller for a medieval kingdom game where the new king (the player) faces terrible choices.
 
 Starting Point:
 - Character: ${npcData.name} (${npcData.role})
@@ -167,9 +165,11 @@ Starting Point:
 - Existing Characters & Fates: ${JSON.stringify(context.existingCharacters)}
 
 IMPORTANT: Use past character actions to create consequences. If characters died or were exiled, their families or allies might appear!
+EACH CHOICE BRINGS SOME SORT OF SUFFERING
 
 RANDOM ELEMENT: ${randomEvent}
 STORY TWIST: ${randomComplication}
+The characters dialogues are use to explain the STORY TWIST and RANDOM ELEMENT
 
 MEDIEVAL SPEECH STYLE (Keep it Simple):
 - Use "My Lord" or "Your Majesty" for addressing the king
@@ -180,11 +180,11 @@ MEDIEVAL SPEECH STYLE (Keep it Simple):
 - Keep sentences SHORT and CLEAR for non-native speakers
 
 DARK HUMOR GUIDELINES:
-🖤 MAKE IT DARKLY FUNNY: Situations should be tragic but absurd
-💀 IRONIC TWISTS: Characters face grimly amusing fates
-😈 GALLOWS HUMOR: Find comedy in desperate situations
-🔥 CYNICAL TONE: All choices have terrible outcomes
-⚡ TWISTED RESULTS: Even good deeds backfire
+MAKE IT DARKLY FUNNY: Situations should be tragic but absurd
+IRONIC TWISTS: Characters face grimly amusing fates
+GALLOWS HUMOR: Find comedy in desperate situations
+CYNICAL TONE: All choices have terrible outcomes
+TWISTED RESULTS: Even good deeds backfire
 
 CREATIVE FREEDOM:
 - Transform scenarios based on past events with dark twists
@@ -200,8 +200,8 @@ FORMAT YOUR RESPONSE:
     {
       "text": "Simple action choice (10 words max)",
       "consequence": "Dark ironic result (5 words max)",
-      "popularityChange": number (-20 to +20),
-      "narratorResponse": "Grimly funny consequence in simple medieval style (20 words max)"
+      "popularityChange": number (-20 to +20) based on consequence,
+      "narratorResponse": "explain the consequence in simple medieval style (10 words max)"
     }
   ],
   "characterActions": [
@@ -222,12 +222,6 @@ CHARACTER ACTIONS:
 - CREATE: New characters emerge from your choices (refugees, rebels, heroes)
 - MODIFY: Existing characters change roles, status, or relationships
 - EXILE: Characters get banished or flee the kingdom
-
-EXAMPLE SIMPLE MEDIEVAL SPEECH:
-- "My Lord, the children starve!" (not "Prithee, thy subjects doth perish")
-- "Please help us, Your Majesty!" (not "We beseech thee, noble sovereign")
-- "Mayhap 'tis better to die." (not "Perchance 'twould be meet to perish")
-- "The gods mock us this day." (not "Verily, the divine ones doth jest")
 
 KEEP IT SIMPLE BUT ATMOSPHERIC! Dark humor with easy-to-understand medieval flavor!
 `

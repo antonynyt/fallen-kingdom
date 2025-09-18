@@ -5,7 +5,8 @@
 }
 
 body {
-    font-family: 'Crimson Text', serif;
+    /* font-family: 'Crimson Text', serif; */
+    font-family: 'Arial', sans-serif;
     background: #0a0a0a;
     color: #f0f0f0;
     overflow: hidden;

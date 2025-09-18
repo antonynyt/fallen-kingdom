@@ -11,7 +11,7 @@
           <p><strong>Rule wisely, for rebellion lurks in every poor choice.</strong></p>
         </div>
         <GameButton @click="$emit('start-game')" class="start-button">
-          Begin Your Reign
+          Begin
         </GameButton>
       </div>
     </div>

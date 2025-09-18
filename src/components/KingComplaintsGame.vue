@@ -46,6 +46,8 @@
         v-else-if="gameState === 'ended'"
         :popularity="popularity"
         :ending-type="endingType"
+        :action-history="actionHistory"
+        :characters="getAllCharacters()"
         @restart="restart"
       />
     </div>
@@ -324,7 +326,7 @@ const generateDefaultNarrator = (choice, result) => {
 
 const loadNextNPCInBackground = async () => {
   // Check game over conditions first
-  if (popularity.value <= 0 || currentTurn.value >= 8) {
+  if (popularity.value <= 0 || currentTurn.value >= 5) {
     nextNPCReady.value = null
     return
   }
@@ -387,7 +389,7 @@ const continueGame = async () => {
     return
   }
   
-  if (currentTurn.value >= 8) {
+  if (currentTurn.value >= 5) {
     endGame(popularity.value >= 70 ? 'victory' : 'neutral')
     return
   }
@@ -467,59 +469,4 @@ const restart = () => {
     );
 }
 
-.narrator-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.narrator-content {
-  background: rgba(20, 20, 30, 0.95);
-  padding: 3rem;
-  border-radius: 15px;
-  border: 2px solid #ffd700;
-  max-width: 600px;
-  text-align: center;
-}
-
-.narrator-title {
-  color: #ffd700;
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.narrator-text {
-  color: #e0e0e0;
-  font-size: 1.2rem;
-  line-height: 1.6;
-  margin-bottom: 2rem;
-  font-style: italic;
-}
-
-.continue-button {
-  background: rgba(255, 215, 0, 0.9);
-  color: #000;
-  font-weight: bold;
-}
-
-.narrator-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.countdown-timer {
-  color: #aaa;
-  font-size: 0.9rem;
-  font-style: italic;
-}
 </style>

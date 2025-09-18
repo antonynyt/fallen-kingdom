@@ -43,7 +43,7 @@ defineProps({
 }
 
 .speaker-name {
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #ffd700;
   margin: 0;
 }
@@ -56,7 +56,7 @@ defineProps({
 }
 
 .speaker-summary {
-  font-size: 1rem;
+  font-size: 1.3rem;
   color: #cccccc;
   font-style: italic;
   opacity: 0.8;
@@ -68,7 +68,7 @@ defineProps({
   align-items: start;
   justify-content: flex-start;
   flex: 1;
-  font-size: 1rem;
+  font-size: 1.3rem;
   line-height: 1.5;
 }
 </style>

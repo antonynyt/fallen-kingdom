@@ -5,7 +5,7 @@ export const gameData = {
       name: 'John the Farmer',
       role: 'Peasant',
       image: '/images/characters/farmer.jpg',
-      background: '/images/backgrounds/farmland.jpg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'The taxes are crushing us.',
       summary: 'Tax burden crushing peasants',
       dialogue: 'Your Majesty, taxes crush us! Children starve while nobles feast. Please show mercy!',
@@ -39,7 +39,7 @@ export const gameData = {
       name: 'Elena the Merchant',
       role: 'Burgher',
       image: '/images/characters/merchant.jpg',
-      background: '/images/backgrounds/marketplace.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'Bandits on trade routes, killing commerce!',
       summary: 'Bandits terrorizing trade routes',
       dialogue: 'Trade routes crawl with bandits! Three guards dead, cargo lost. Commerce dies without protection!',
@@ -78,7 +78,7 @@ export const gameData = {
       name: 'Lord Blackwood',
       role: 'Noble',
       image: '/images/characters/noble.jpg',
-      background: '/images/backgrounds/castle_hall.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'The kingdom needs stronger leadership and order!',
       dialogue: 'Your Majesty, I speak for many of the noble houses when I say that the realm requires... firmer guidance. The peasants grow restless, merchants complain constantly, and our enemies sense weakness. Perhaps it is time for more... experienced leadership?',
       choices: [
@@ -114,7 +114,7 @@ export const gameData = {
       name: 'Father Marcus',
       role: 'Clergy',
       image: '/images/characters/priest.jpg',
-      background: '/images/backgrounds/cathedral.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'The church needs more support for the faithful',
       dialogue: 'Bless you, Your Majesty. I come seeking aid for the church and its flock. Our granaries are empty, our walls crumble, and the faithful lose hope. The previous king promised reforms that never came. Will you honor the sacred bond between crown and church?',
       choices: [
@@ -144,7 +144,7 @@ export const gameData = {
       name: 'Captain Steel',
       role: 'Military',
       image: '/images/characters/captain.jpg',
-      background: '/images/backgrounds/barracks.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'The army lacks equipment and morale is low',
       dialogue: 'Your Majesty, I must speak plainly. Our soldiers fight with rusty swords and broken shields. Morale is at its lowest point in decades. Men desert daily, and those who remain question whether the crown truly supports them. We need resources, and we need them now.',
       choices: [
@@ -179,7 +179,7 @@ export const gameData = {
       name: 'Morgana the Wise',
       role: 'Mystic',
       image: '/images/characters/witch.jpg',
-      background: '/images/backgrounds/forest.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'The people fear magic.',
       dialogue: 'Young king, I emerge from the shadows to warn you. Magic users are hunted like animals in your realm. Yet we have served the crown faithfully for generations. Continue this persecution, and you will lose powerful allies when dark times come... and they are coming.',
       choices: [
@@ -215,7 +215,7 @@ export const gameData = {
       name: 'Little Tim',
       role: 'Child',
       image: '/images/characters/orphan.jpg',
-      background: '/images/backgrounds/slums.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'The orphanage is overcrowded and we are starving',
       dialogue: 'P-please, Your Majesty... I speak for all the children with no families. The orphanage is so crowded we sleep on the floor. Sister Mary tries her best, but there is never enough food. Many of us get sick and... and some do not get better. Could you please help us?',
       choices: [
@@ -250,7 +250,7 @@ export const gameData = {
       name: 'Ambassador Valdris',
       role: 'Diplomat',
       image: '/images/characters/ambassador.jpg',
-      background: '/images/backgrounds/embassy.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'Neighboring kingdoms question your legitimacy',
       dialogue: 'Your Majesty, I bring word from the Council of Kingdoms. Your neighboring rulers question the legitimacy of your claim to the throne. They speak of intervention to "restore proper order." We must act swiftly to secure alliances, or face potential invasion.',
       choices: [
@@ -286,7 +286,7 @@ export const gameData = {
       name: 'Anne the Healer',
       role: 'Physician',
       image: '/images/characters/healer.jpg',
-      background: '/images/backgrounds/infirmary.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'A plague threatens to spread through the kingdom',
       dialogue: 'Your Majesty, I fear I bring terrible news. A plague has begun in the eastern villages. I have seen this disease before - it spreads quickly and kills without mercy. We need immediate action: quarantine, supplies, and healers, or it will consume the entire kingdom.',
       choices: [
@@ -322,7 +322,7 @@ export const gameData = {
       name: 'Garon the Smith',
       role: 'Craftsman',
       image: '/images/characters/blacksmith.svg',
-      background: '/images/backgrounds/forge.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'Guilds are being undermined by cheap foreign goods',
       dialogue: 'Your Majesty, the guilds that built this kingdom are dying! Foreign merchants flood our markets with cheap, poorly-made goods. Our craftsmen, who have served the crown for generations, can no longer compete. Soon, all quality craftsmanship will be lost forever.',
       choices: [
@@ -357,7 +357,7 @@ export const gameData = {
       name: 'Scholar Livia',
       role: 'Academic',
       image: '/images/characters/scholar.jpg',
-      background: '/images/backgrounds/library.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'Knowledge and learning are being neglected',
       dialogue: 'Your Majesty, the great libraries crumble while ignorance spreads like wildfire. Books rot, scholars flee to other lands, and superstition replaces wisdom. A kingdom that abandons learning abandons its future. Will you be the king who lets knowledge die?',
       choices: [
@@ -392,7 +392,7 @@ export const gameData = {
       name: 'The Crow',
       role: 'Spymaster',
       image: '/images/characters/spy.jpg',
-      background: '/images/backgrounds/shadows.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'Enemies plot against you from within and without',
       dialogue: 'Your Majesty... I bring whispers from the shadows. Lord Blackwood conspires with foreign agents. Assassins move through your halls. The church harbors dissidents. Trust no one completely, for treachery lurks in every smile. Give me authority to act, or watch your reign crumble.',
       choices: [
@@ -428,7 +428,7 @@ export const gameData = {
       name: 'Felix the Bard',
       role: 'Entertainer',
       image: '/images/characters/bard.jpg',
-      background: '/images/backgrounds/tavern.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'The people lose hope and need inspiration',
       dialogue: 'Your Majesty, I travel the realm and hear the people sing... but their songs have grown dark. They speak of hunger, fear, and lost hope. A kingdom without joy is a kingdom without soul. The people need something to believe in, some reason to smile again.',
       choices: [
@@ -463,7 +463,7 @@ export const gameData = {
       name: 'Ghost of the Old King',
       role: 'Supernatural',
       image: '/images/characters/ghost.svg',
-      background: '/images/backgrounds/throne_room_night.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'You must prove worthy of the crown I left behind',
       dialogue: 'My heir... I have watched from beyond the veil as you struggle with the burden I left you. The crown is heavy, is it not? You have made choices I would not have made... but perhaps that is for the best. Tell me, do you believe yourself worthy of the throne?',
       choices: [
@@ -499,7 +499,7 @@ export const gameData = {
       name: 'Draconic Envoy',
       role: 'Mythical',
       image: '/images/characters/dragon.svg',
-      background: '/images/backgrounds/mountain.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'Ancient treaties have been broken',
       dialogue: 'Mortal king... the Great Dragons have slumbered long, but your realm has grown bold. Miners dig too deep into our sacred mountains. Hunters slay our lesser kin. The ancient treaties your ancestors signed lie broken. Restore the old ways, or face our wrath.',
       choices: [
@@ -535,7 +535,7 @@ export const gameData = {
       name: 'The Hooded Stranger',
       role: 'Unknown',
       image: '/images/characters/spy.svg',
-      background: '/images/backgrounds/shadows.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'Dark forces gather beyond the borders',
       dialogue: 'Your Majesty... shadows move in the realm. Something wicked approaches.',
       choices: [
@@ -568,7 +568,7 @@ export const gameData = {
       name: 'Sage Chronos',
       role: 'Oracle',
       image: '/images/characters/scholar.svg',
-      background: '/images/backgrounds/library.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'The timeline fractures with your choices',
       dialogue: 'King! I have seen futures... terrible futures born from this moment.',
       choices: [
@@ -601,7 +601,7 @@ export const gameData = {
       name: 'Dr. Mortis',
       role: 'Physician',
       image: '/images/characters/healer.svg',
-      background: '/images/backgrounds/infirmary.svg',
+      background: '/images/backgrounds/crowd.jpg',
       baseComplaint: 'A new plague spreads through the kingdom',
       dialogue: 'Majesty! A strange sickness spreads. Bodies pile high in distant villages.',
       choices: [

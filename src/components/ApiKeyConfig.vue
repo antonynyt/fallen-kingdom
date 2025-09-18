@@ -35,7 +35,7 @@
           Skip AI Integration
         </GameButton>
         <div class="debug-section" v-if="isDev">
-          <small>Debug: <button @click="clearApiKey" style="font-size: 10px;">Clear stored API key</button></small>
+          <small>Debug: <button @click="clearApiKey" style="font-size: 12px;">Clear stored API key</button></small>
         </div>
       </div>
     </div>
@@ -132,7 +132,7 @@ const clearApiKey = () => {
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   color: white;
-  font-size: 1rem;
+  font-size: 1.3rem;
 }
 
 .api-input:focus {
@@ -145,7 +145,7 @@ const clearApiKey = () => {
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .help-text p {

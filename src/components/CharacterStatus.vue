@@ -159,7 +159,7 @@ const getStatusText = (character) => {
 .panel-header h2 {
   color: #ffd700;
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
@@ -167,7 +167,7 @@ const getStatusText = (character) => {
   background: none;
   border: none;
   color: #ffd700;
-  font-size: 2rem;
+  font-size: 2.5rem;
   cursor: pointer;
   padding: 0;
   width: 30px;
@@ -243,7 +243,7 @@ const getStatusText = (character) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 2.5rem;
   border-radius: 8px;
 }
 
@@ -253,7 +253,7 @@ const getStatusText = (character) => {
   right: -5px;
   background: #4CAF50;
   color: white;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   padding: 2px 6px;
   border-radius: 12px;
   font-weight: bold;
@@ -267,13 +267,13 @@ const getStatusText = (character) => {
 .character-name {
   color: #ffd700;
   margin: 0 0 0.25rem 0;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .character-role {
   color: #aaa;
   margin: 0 0 1rem 0;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-style: italic;
 }
 
@@ -287,12 +287,12 @@ const getStatusText = (character) => {
   align-items: center;
   margin-bottom: 0.5rem;
   color: #e0e0e0;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .affinity-status {
   font-weight: bold;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 .affinity-bar {
@@ -335,7 +335,7 @@ const getStatusText = (character) => {
 .status-badge {
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 
@@ -355,7 +355,7 @@ const getStatusText = (character) => {
 }
 
 .status-reason {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: #aaa;
   font-style: italic;
   margin-top: 0.25rem;
@@ -372,14 +372,14 @@ const getStatusText = (character) => {
 .interactions h4 {
   color: #ccc;
   margin: 0 0 0.5rem 0;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .interaction {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 0.25rem;
-  font-size: 0.8rem;
+  font-size: 1rem;
   align-items: center;
 }
 

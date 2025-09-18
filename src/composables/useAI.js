@@ -165,7 +165,7 @@ Starting Point:
 - Existing Characters & Fates: ${JSON.stringify(context.existingCharacters)}
 
 IMPORTANT: Use past character actions to create consequences. If characters died or were exiled, their families or allies might appear!
-EACH CHOICE BRINGS SOME SORT OF SUFFERING
+YOU CAN EARN POPULARITY.
 
 RANDOM ELEMENT: ${randomEvent}
 STORY TWIST: ${randomComplication}

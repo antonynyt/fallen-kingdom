@@ -102,7 +102,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 const props = defineProps({
   consequenceData: {
@@ -137,6 +137,29 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['continue'])
+
+// Play audio based on popularity change
+onMounted(() => {
+  const audio = new Audio()
+  const popularityChange = props.consequenceData.popularityChange
+  console.log('Playing audio for popularity change:', popularityChange)
+  
+  if (popularityChange > 0) {
+    audio.src = '/audio/effects/cheer.mp3'
+    console.log('Playing cheer sound (gained popularity)')
+  } else if (popularityChange < 0) {
+    audio.src = '/audio/effects/boo.mp3'
+    console.log('Playing boo sound (lost popularity)')
+  } else {
+    // No popularity change - could play either or nothing
+    audio.src = '/audio/effects/cheer.mp3'
+    console.log('Playing cheer sound (no popularity change)')
+  }
+  
+  audio.play().catch(error => {
+    console.warn('Could not play audio:', error)
+  })
+})
 
 // Button disabled logic - disabled for first 5 seconds
 const isButtonDisabled = computed(() => {
@@ -265,7 +288,7 @@ const formatPopularityChange = (change) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -366,7 +389,7 @@ const formatPopularityChange = (change) => {
 }
 
 .popularity-arrows {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   margin-top: 0.5rem;
 }
 
@@ -454,7 +477,7 @@ const formatPopularityChange = (change) => {
 }
 
 .impact-label {
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
@@ -468,7 +491,7 @@ const formatPopularityChange = (change) => {
 }
 
 .narrator-title {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 1.5rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
@@ -530,7 +553,7 @@ const formatPopularityChange = (change) => {
 }
 
 .action-icon {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-right: 1rem;
   min-width: 3rem;
 }
@@ -542,12 +565,12 @@ const formatPopularityChange = (change) => {
 
 .character-name {
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   color: #ffd700;
 }
 
 .action-description {
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #ccc;
   margin-top: 0.2rem;
 }
@@ -575,7 +598,7 @@ const formatPopularityChange = (change) => {
 .theme-change {
   padding: 0.5rem;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .theme-change.increase {
@@ -593,7 +616,7 @@ const formatPopularityChange = (change) => {
   background: rgba(255, 215, 0, 0.1);
   color: #ffd700;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   animation: arcGlow 2s ease-in-out infinite;
 }
 
@@ -603,7 +626,7 @@ const formatPopularityChange = (change) => {
 }
 
 .narrator-text {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   line-height: 1.6;
   margin-bottom: 2rem;
   font-style: italic;
@@ -623,7 +646,7 @@ const formatPopularityChange = (change) => {
 
 .continue-button {
   padding: 1rem 2rem;
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   font-weight: bold;
   border-radius: 8px;
   transition: all 0.3s ease;
@@ -692,7 +715,7 @@ const formatPopularityChange = (change) => {
 }
 
 .countdown-timer {
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-style: italic;
 }
 

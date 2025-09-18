@@ -15,7 +15,7 @@
             Characters
           </button>
         </div>
-        <div class="turn-counter">Turn {{ turn }}/8</div>
+        <div class="turn-counter">Turn {{ turn }}/5</div>
       </div>
     </div>
 
@@ -188,7 +188,7 @@ onMounted(() => {
   border: 0;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.3rem;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -217,7 +217,7 @@ onMounted(() => {
 
 .turn-counter {
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .dialogue-area {

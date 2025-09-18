@@ -198,7 +198,7 @@ export function useGameState() {
   })
 
   const canContinue = computed(() => 
-    popularity.value > 0 && currentTurn.value <= 15
+    popularity.value > 0 && currentTurn.value <= 5
   )
 
   const updateStoryThemes = (action) => {

@@ -54,13 +54,13 @@ const isNegative = computed(() => props.popularityChange < 0)
 }
 
 .choice-text {
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
 
 .choice-consequence {
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #cccccc;
   font-style: italic;
 }

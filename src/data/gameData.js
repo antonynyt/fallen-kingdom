@@ -7,6 +7,7 @@ export const gameData = {
       image: '/images/characters/farmer.jpg',
       background: '/images/backgrounds/farmland.jpg',
       baseComplaint: 'The taxes are crushing us.',
+      summary: 'Tax burden crushing peasants',
       dialogue: 'Your Majesty, taxes crush us! Children starve while nobles feast. Please show mercy!',
       choices: [
         {
@@ -40,6 +41,7 @@ export const gameData = {
       image: '/images/characters/merchant.svg',
       background: '/images/backgrounds/marketplace.svg',
       baseComplaint: 'Bandits on trade routes, killing commerce!',
+      summary: 'Bandits terrorizing trade routes',
       dialogue: 'Trade routes crawl with bandits! Three guards dead, cargo lost. Commerce dies without protection!',
       choices: [
         {

@@ -304,6 +304,7 @@ KEEP IT SIMPLE BUT ATMOSPHERIC! Dark humor with easy-to-understand medieval flav
         const result = {
           ...originalNPC,
           dialogue: parsed.dialogue || originalNPC.dialogue,
+          summary: parsed.summary || originalNPC.summary,
           choices: enhancedChoices,
           characterActions: characterActions
         }

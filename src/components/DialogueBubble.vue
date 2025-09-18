@@ -2,7 +2,10 @@
   <div class="dialogue-bubble">
     <img v-if="characterImage" :src="characterImage" :alt="speaker" class="character-image" />
     <div class="dialogue-text">
-      <h3 class="speaker-name">{{ speaker }}</h3>
+      <div class="speaker-header">
+        <h3 class="speaker-name">{{ speaker }}</h3>
+        <span v-if="summary" class="speaker-summary">Complaint: {{ summary }}</span>
+      </div>
       <p>
         {{ text }}
       </p>
@@ -14,7 +17,8 @@
 defineProps({
   speaker: String,
   text: String,
-  characterImage: String
+  characterImage: String,
+  summary: String
 })
 </script>
 
@@ -41,15 +45,28 @@ defineProps({
 .speaker-name {
   font-size: 0.9rem;
   color: #ffd700;
-  text-align: center;
   margin: 0;
+}
+
+.speaker-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.speaker-summary {
+  font-size: 1rem;
+  color: #cccccc;
+  font-style: italic;
+  opacity: 0.8;
 }
 
 .dialogue-text {
   display: flex;
   flex-direction: column;
   align-items: start;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex: 1;
   font-size: 1.2rem;
   line-height: 1.5;

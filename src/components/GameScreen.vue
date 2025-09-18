@@ -26,6 +26,7 @@
         :speaker="currentNpc.name"
         :text="currentDialogue"
         :character-image="currentNpc.image"
+        :summary="currentNpc.summary"
       />
       
       <div v-if="showChoices" class="choices-container">

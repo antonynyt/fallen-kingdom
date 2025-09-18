@@ -25,6 +25,7 @@
         :popularity="popularity"
         :turn="currentTurn"
         :is-ai-generated="isCurrentNPCAIGenerated"
+        :characters="getAllCharacters()"
         @choice-made="handleChoice"
       />
       
@@ -71,10 +72,15 @@ const {
   popularity, 
   currentTurn, 
   actionHistory, 
+  characters,
   addAction, 
   resetGame,
   getCurrentNPC,
-  processChoice
+  processChoice,
+  addAIGeneratedCharacter,
+  getAllCharacters,
+  executeImmediateCharacterActions,
+  executeChoiceCharacterActions
 } = useGameState()
 
 const { generateNPCContent, hasApiKey } = useAI()
@@ -117,7 +123,7 @@ const loadNextNPC = async () => {
   const hasAI = hasApiKey()
   
   // Generate dynamic content with AI
-  const enhancedNPC = await generateNPCContent(npcData, actionHistory.value)
+  const enhancedNPC = await generateNPCContent(npcData, actionHistory.value, characters.value)
   currentNPC.value = enhancedNPC
   
   // Track if this content was AI-generated (has API key and enhanced content differs from original)
@@ -125,21 +131,57 @@ const loadNextNPC = async () => {
     enhancedNPC.dialogue !== npcData.dialogue || 
     JSON.stringify(enhancedNPC.choices) !== JSON.stringify(npcData.choices)
   )
+
+  // If this is a new AI-generated character, add it to the tracking system
+  if (isCurrentNPCAIGenerated.value && enhancedNPC.id !== npcData.id) {
+    addAIGeneratedCharacter(enhancedNPC)
+  }
+
+  // Execute immediate character actions (if any)
+  const immediateActions = executeImmediateCharacterActions(enhancedNPC)
+  if (immediateActions.length > 0) {
+    console.log('Executing immediate character actions:', immediateActions)
+    // You could show these actions to the player here if needed
+  }
 }
 
 const handleChoice = async (choice) => {
   const result = processChoice(choice, currentNPC.value)
   
-  // Add action to history first
+  // Find the choice index for character actions
+  const choiceIndex = currentNPC.value.choices?.findIndex(c => c.text === choice.text) ?? -1
+  
+  // Execute choice-triggered character actions
+  const characterActions = executeChoiceCharacterActions(currentNPC.value, choiceIndex)
+  if (characterActions.length > 0) {
+    console.log('Executing choice character actions:', characterActions)
+    // Enhance narrator response with character action descriptions
+    const actionDescriptions = characterActions.map(action => {
+      switch (action.type) {
+        case 'death': return `${action.characterName} has died: ${action.reason}`
+        case 'create': return `A new ${action.characterRole} named ${action.characterName} appears: ${action.reason}`
+        case 'exile': return `${action.characterName} has been exiled: ${action.reason}`
+        case 'modify': return `${action.characterName} has changed: ${action.reason}`
+        default: return `Something happened to ${action.characterName}: ${action.reason}`
+      }
+    }).join('. ')
+    
+    // Append character actions to narrator response
+    const originalNarrator = choice.narratorResponse || generateDefaultNarrator(choice, result)
+    currentNarratorText.value = `${originalNarrator} ${actionDescriptions}`
+  } else {
+    currentNarratorText.value = choice.narratorResponse || generateDefaultNarrator(choice, result)
+  }
+  
+  // Add action to history 
   addAction({
     turn: currentTurn.value,
     npc: currentNPC.value.id,
     choice: choice,
-    popularityChange: result.popularityChange
+    popularityChange: result.popularityChange,
+    characterActions: characterActions // Track what character actions happened
   })
   
-  // Show narrator response
-  currentNarratorText.value = choice.narratorResponse || generateDefaultNarrator(choice, result)
   showingNarratorResponse.value = true
   
   // Clear any existing timer
@@ -195,7 +237,7 @@ const loadNextNPCInBackground = async () => {
   const hasAI = hasApiKey()
   
   // Generate dynamic content with AI in background
-  const enhancedNPC = await generateNPCContent(npcData, actionHistory.value)
+  const enhancedNPC = await generateNPCContent(npcData, actionHistory.value, characters.value)
   
   // Store the ready NPC with AI status
   nextNPCReady.value = {
@@ -204,6 +246,18 @@ const loadNextNPCInBackground = async () => {
       enhancedNPC.dialogue !== npcData.dialogue || 
       JSON.stringify(enhancedNPC.choices) !== JSON.stringify(npcData.choices)
     )
+  }
+
+  // If this is a new AI-generated character, add it to the tracking system
+  const isAIGenerated = nextNPCReady.value.isAiGenerated && enhancedNPC.id !== npcData.id
+  if (isAIGenerated) {
+    addAIGeneratedCharacter(enhancedNPC)
+  }
+
+  // Pre-process immediate character actions for the ready NPC
+  const immediateActions = executeImmediateCharacterActions(enhancedNPC)
+  if (immediateActions.length > 0) {
+    console.log('Pre-processing immediate character actions for background NPC:', immediateActions)
   }
   
   console.log('Background NPC ready:', nextNPCReady.value.npc.name)

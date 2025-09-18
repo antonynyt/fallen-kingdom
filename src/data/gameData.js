@@ -6,7 +6,7 @@ export const gameData = {
       role: 'Peasant',
       image: '/images/characters/farmer.jpg',
       background: '/images/backgrounds/farmland.jpg',
-      baseComplaint: 'The taxes are crushing us, Your Majesty! We can barely feed our families.',
+      baseComplaint: 'The taxes are crushing us.',
       dialogue: 'Your Majesty, taxes crush us! Children starve while nobles feast. Please show mercy!',
       choices: [
         {
@@ -39,7 +39,7 @@ export const gameData = {
       role: 'Burgher',
       image: '/images/characters/merchant.svg',
       background: '/images/backgrounds/marketplace.svg',
-      baseComplaint: 'Bandits plague the trade routes, killing commerce!',
+      baseComplaint: 'Bandits on trade routes, killing commerce!',
       dialogue: 'Trade routes crawl with bandits! Three guards dead, cargo lost. Commerce dies without protection!',
       choices: [
         {
@@ -178,7 +178,7 @@ export const gameData = {
       role: 'Mystic',
       image: '/images/characters/witch.svg',
       background: '/images/backgrounds/forest.svg',
-      baseComplaint: 'The people fear magic and persecute the gifted',
+      baseComplaint: 'The people fear magic.',
       dialogue: 'Young king, I emerge from the shadows to warn you. Magic users are hunted like animals in your realm. Yet we have served the crown faithfully for generations. Continue this persecution, and you will lose powerful allies when dark times come... and they are coming.',
       choices: [
         {

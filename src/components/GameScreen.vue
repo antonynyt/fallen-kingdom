@@ -10,6 +10,11 @@
             <div class="meter-fill" :style="{ width: popularity + '%' }"></div>
           </div>
         </div>
+        <div class="status-actions">
+          <button class="characters-button" @click="showCharacterStatus = true" title="View Characters">
+            👥 Characters
+          </button>
+        </div>
         <div class="turn-counter">Turn {{ turn }}/8</div>
       </div>
     </div>
@@ -33,6 +38,13 @@
         />
       </div>
     </div>
+
+    <!-- Character Status Panel -->
+    <CharacterStatus
+      :visible="showCharacterStatus"
+      :characters="characters"
+      @close="showCharacterStatus = false"
+    />
   </div>
 </template>
 
@@ -40,12 +52,14 @@
 import { ref, computed, onMounted } from 'vue'
 import DialogueBubble from './DialogueBubble.vue'
 import ChoiceButton from './ChoiceButton.vue'
+import CharacterStatus from './CharacterStatus.vue'
 
 const props = defineProps({
   currentNpc: Object,
   popularity: Number,
   turn: Number,
-  isAiGenerated: Boolean  // Add prop to indicate if content is AI-generated
+  isAiGenerated: Boolean,  // Add prop to indicate if content is AI-generated
+  characters: Array  // Add characters prop
 })
 
 const emit = defineEmits(['choice-made'])
@@ -55,6 +69,7 @@ const showChoices = ref(false)
 const dialogueIndex = ref(0)
 const isStreaming = ref(false)
 const currentAnimationId = ref(0) // Track animation instances
+const showCharacterStatus = ref(false)
 
 const typewriterSpeed = 10 // milliseconds per character
 
@@ -158,6 +173,31 @@ onMounted(() => {
   padding: 1rem 2rem;
   background: rgba(0, 0, 0, 0.7);
   color: white;
+}
+
+.status-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.characters-button {
+  background: rgba(255, 215, 0, 0.2);
+  border: 1px solid #ffd700;
+  color: #ffd700;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.characters-button:hover {
+  background: rgba(255, 215, 0, 0.4);
+  color: white;
+  transform: translateY(-1px);
 }
 
 .popularity-meter {

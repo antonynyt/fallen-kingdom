@@ -25,7 +25,7 @@ export function useAI() {
     }
   }
 
-  const generateNPCContent = async (npcData, actionHistory) => {
+  const generateNPCContent = async (npcData, actionHistory, existingCharacters = {}) => {
     if (!apiKey.value) {
       // Using static content mode - this is expected behavior when no API key is set
       console.log('AI: Using static content (no API key configured)')
@@ -37,7 +37,7 @@ export function useAI() {
     error.value = null
 
     try {
-      const context = buildContext(npcData, actionHistory)
+      const context = buildContext(npcData, actionHistory, existingCharacters)
       const prompt = buildPrompt(npcData, context)
 
       const response = await fetch(
@@ -92,17 +92,28 @@ export function useAI() {
     }
   }
 
-  const buildContext = (npcData, actionHistory) => {
+  const buildContext = (npcData, actionHistory, existingCharacters = {}) => {
     const relevantActions = actionHistory.filter(action => 
       isActionRelevantToNPC(action, npcData)
     )
-
+    
+    // Convert existing characters object to a simple summary for AI
+    const characterSummary = Object.values(existingCharacters).map(char => ({
+      name: char.name,
+      role: char.role,
+      status: char.status,
+      affinity: char.affinity,
+      deathReason: char.deathReason,
+      exileReason: char.exileReason
+    })).filter(char => char.status !== 'alive' || char.affinity < 30 || char.affinity > 70)
+    
     return {
       pastActions: relevantActions,
       currentPopularity: actionHistory.length > 0 ? 
         actionHistory[actionHistory.length - 1].popularity : 50,
       npcRole: npcData.role,
-      npcRelationships: npcData.relationships || []
+      npcRelationships: npcData.relationships || [],
+      existingCharacters: characterSummary
     }
   }
 
@@ -117,95 +128,158 @@ export function useAI() {
   const buildPrompt = (npcData, context) => {
     // Add random elements to make each generation unique
     const randomEvents = [
-      'a meteor has fallen nearby',
+      'a falling star struck nearby',
       'strange dreams plague the kingdom',
-      'animals speak prophecies',
-      'the dead have been restless',
-      'magic flows chaotically',
-      'time moves strangely',
-      'the seasons have reversed',
-      'ancient curses awaken',
-      'gods walk among mortals',
-      'reality itself seems unstable'
+      'animals act strangely',
+      'the dead seem restless',
+      'magic flows wildly',
+      'time feels different',
+      'the seasons changed suddenly',
+      'old curses awaken',
+      'gods walk among us',
+      'the world seems mad'
     ]
     
     const randomComplications = [
       'but a terrible price must be paid',
-      'yet dark forces manipulate events',
+      'yet dark forces interfere',
       'while ancient prophecies unfold',
-      'as reality tears at the seams',
+      'as reality tears apart',
       'though the gods demand sacrifice',
-      'but the cure is worse than the disease',
+      'but the cure brings worse problems',
       'while time runs out',
-      'as chaos spreads unchecked',
+      'as chaos spreads everywhere',
       'yet hope dies with each choice',
-      'but madness seeps into reason'
+      'but madness creeps in'
     ]
     
     const randomEvent = randomEvents[Math.floor(Math.random() * randomEvents.length)]
     const randomComplication = randomComplications[Math.floor(Math.random() * randomComplications.length)]
     
     return `
-You are a darkly humorous storyteller generating content for a medieval fantasy kingdom simulation. 
-The new king faces morally complex dilemmas where every choice has terrible consequences.
+You are a darkly humorous storyteller for a medieval kingdom game where the new king faces terrible choices.
 
 Starting Point:
 - Character: ${npcData.name} (${npcData.role})
-- Base Issue: ${npcData.baseComplaint}
+- Their Problem: ${npcData.baseComplaint}
 - Kingdom Popularity: ${context.currentPopularity}%
 - Past Royal Decisions: ${JSON.stringify(context.pastActions)}
+- Existing Characters & Fates: ${JSON.stringify(context.existingCharacters)}
 
-RANDOM ELEMENT TO INCORPORATE: ${randomEvent}
-STORY COMPLICATION: ${randomComplication}
+IMPORTANT: Use past character actions to create consequences. If characters died or were exiled, their families or allies might appear!
+
+RANDOM ELEMENT: ${randomEvent}
+STORY TWIST: ${randomComplication}
+
+MEDIEVAL SPEECH STYLE (Keep it Simple):
+- Use "My Lord" or "Your Majesty" for addressing the king
+- Add occasional "Please" → "Pray" or "Prithee"
+- Use "Perhaps" → "Mayhap" sometimes
+- Add "-eth" to some verbs (speaks → speaketh, but keep it rare)
+- Use simple old words: "Aye" (yes), "Nay" (no), "'Tis" (it is)
+- Keep sentences SHORT and CLEAR for non-native speakers
 
 DARK HUMOR GUIDELINES:
-🖤 EMBRACE DARK COMEDY: Make situations absurdly tragic or ironically twisted
-💀 MORBID IRONY: Characters should face grimly humorous predicaments
-� GALLOWS HUMOR: Find comedy in desperate situations
-🔥 CYNICAL TONE: Present choices where all outcomes are somewhat terrible
-� CHAOTIC CONSEQUENCES: Even "good" choices should have dark undertones
+🖤 MAKE IT DARKLY FUNNY: Situations should be tragic but absurd
+💀 IRONIC TWISTS: Characters face grimly amusing fates
+😈 GALLOWS HUMOR: Find comedy in desperate situations
+🔥 CYNICAL TONE: All choices have terrible outcomes
+⚡ TWISTED RESULTS: Even good deeds backfire
 
 CREATIVE FREEDOM:
 - Transform scenarios based on past events with dark twists
-- Add unexpected tragic-comic elements
+- Add unexpected tragic-comic moments
 - Show how past decisions created darkly ironic situations
-- Make moral choices where righteousness leads to suffering
+- Make moral choices where doing right brings suffering
 
-FORMAT:
+FORMAT YOUR RESPONSE:
 {
-  "dialogue": "Character's darkly humorous situation (MAX 50 words) - be grimly entertaining, dialogue only no narration nor name of the speaker nor special characters",
+  "dialogue": "Character speaks their problem in simple medieval style (MAX 50 words) - ONLY their direct speech, no descriptions",
+  "summary": "Brief summary of the situation and context (5 words max)",
   "choices": [
     {
-      "text": "Action choice (10 words max)",
-      "consequence": "Darkly ironic outcome (5 words max)",
-      "popularityChange": number (-20 to +20) based on how absurdly good or bad the choice is,
-      "narratorResponse": "Grimly humorous consequence (20 words max)"
+      "text": "Simple action choice (10 words max)",
+      "consequence": "Dark ironic result (5 words max)",
+      "popularityChange": number (-20 to +20),
+      "narratorResponse": "Grimly funny consequence in simple medieval style (20 words max)"
+    }
+  ],
+  "characterActions": [
+    {
+      "type": "death|create|modify|exile",
+      "characterId": "id_of_affected_character",
+      "characterName": "name if creating new character",
+      "characterRole": "role if creating new character", 
+      "characterImage": "image_path if creating new character",
+      "reason": "brief explanation why this happened",
+      "triggerChoice": 0 // which choice triggers this, -1 for immediate
     }
   ]
 }
 
-MAKE IT DARKLY FUNNY! Every situation should be tragically absurd! use simple language for non native speakers.
+CHARACTER ACTIONS:
+- DEATH: Characters die from harsh choices, disease, accidents, revenge
+- CREATE: New characters emerge from your choices (refugees, rebels, heroes)
+- MODIFY: Existing characters change roles, status, or relationships
+- EXILE: Characters get banished or flee the kingdom
+
+EXAMPLE SIMPLE MEDIEVAL SPEECH:
+- "My Lord, the children starve!" (not "Prithee, thy subjects doth perish")
+- "Please help us, Your Majesty!" (not "We beseech thee, noble sovereign")
+- "Mayhap 'tis better to die." (not "Perchance 'twould be meet to perish")
+- "The gods mock us this day." (not "Verily, the divine ones doth jest")
+
+KEEP IT SIMPLE BUT ATMOSPHERIC! Dark humor with easy-to-understand medieval flavor!
 `
-  }
+}
 
   const parseAIResponse = (aiText, originalNPC) => {
     try {
       console.log('AI: Parsing response:', aiText.substring(0, 200) + '...')
       
-      // Clean the text first - remove any potential encoding issues
-      const cleanText = aiText.replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
+      // Clean the text first - remove any potential encoding issues and markdown
+      let cleanText = aiText.replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
+      
+      // Remove markdown code blocks if present - handle both opening and closing blocks
+      cleanText = cleanText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim()
+      
+      // If the response still starts with non-JSON content, try to find the JSON part
+      if (!cleanText.startsWith('{')) {
+        const jsonStart = cleanText.indexOf('{')
+        if (jsonStart !== -1) {
+          cleanText = cleanText.substring(jsonStart)
+        }
+      }
       
       // Try to extract JSON from the AI response
       const jsonMatch = cleanText.match(/\{[\s\S]*\}/)
       
-      // Fix invalid JSON with unary plus operators
-      let jsonText = jsonMatch ? jsonMatch[0] : null
+      // Fix invalid JSON with unary plus operators and attempt to fix incomplete JSON
+      let jsonText = jsonMatch ? jsonMatch[0] : cleanText
       if (jsonText) {
         // Remove unary plus operators that make JSON invalid
         jsonText = jsonText.replace(/:\s*\+(\d+)/g, ': $1')
+        
+        // Attempt to fix incomplete JSON by adding missing closing brackets
+        const openBraces = (jsonText.match(/\{/g) || []).length
+        const closeBraces = (jsonText.match(/\}/g) || []).length
+        const openBrackets = (jsonText.match(/\[/g) || []).length
+        const closeBrackets = (jsonText.match(/\]/g) || []).length
+        
+        // Add missing closing brackets for arrays
+        for (let i = closeBrackets; i < openBrackets; i++) {
+          jsonText += ']'
+        }
+        
+        // Add missing closing braces for objects
+        for (let i = closeBraces; i < openBraces; i++) {
+          jsonText += '}'
+        }
+        
+        console.log('AI: Attempting to parse JSON:', jsonText.substring(0, 500) + '...')
       }
+      
       if (jsonText) {
-        console.log('AI: Found JSON:', jsonText)
         const parsed = JSON.parse(jsonText)
         
         // Validate the parsed response
@@ -218,14 +292,23 @@ MAKE IT DARKLY FUNNY! Every situation should be tragically absurd! use simple la
           ...choice,
           narratorResponse: choice.narratorResponse || generateFallbackNarrator(choice, originalNPC)
         })) || originalNPC.choices
+
+        // Extract and validate character actions if present
+        let characterActions = []
+        if (parsed.characterActions && Array.isArray(parsed.characterActions)) {
+          characterActions = parsed.characterActions.filter(action => 
+            action.type && ['death', 'create', 'modify', 'exile'].includes(action.type)
+          )
+        }
         
         const result = {
           ...originalNPC,
           dialogue: parsed.dialogue || originalNPC.dialogue,
-          choices: enhancedChoices
+          choices: enhancedChoices,
+          characterActions: characterActions
         }
         
-        console.log('AI: Successfully parsed response:', result)
+        console.log('AI: Successfully parsed response with character actions:', result)
         return result
       } else {
         console.warn('AI: No JSON found in response')

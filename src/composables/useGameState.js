@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { gameData } from '../data/gameData.js'
 
 export function useGameState() {
-  const popularity = ref(30) // Start at 30%
+  const popularity = ref(50) // Start at 30%
   const currentTurn = ref(1)
   const actionHistory = ref([])
   const completedNPCs = ref([])

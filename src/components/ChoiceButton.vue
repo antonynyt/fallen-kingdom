@@ -26,42 +26,45 @@ const isNegative = computed(() => props.popularityChange < 0)
 
 <style scoped>
 .choice-button {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 215, 0, 0.3);
   color: white;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: left;
   width: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .choice-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.6);
-  transform: translateX(10px);
+  background: rgba(0, 0, 0, 0.9);
+  border-color: rgba(255, 215, 0, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
 }
 
 .choice-button.positive:hover {
   border-color: #44ff44;
-  box-shadow: 0 0 10px rgba(68, 255, 68, 0.3);
+  box-shadow: 0 0 8px rgba(68, 255, 68, 0.3);
 }
 
 .choice-button.negative:hover {
   border-color: #ff4444;
-  box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
+  box-shadow: 0 0 8px rgba(255, 68, 68, 0.3);
 }
 
 .choice-text {
-  font-size: 1.4rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  margin-bottom: 0.4rem;
   font-weight: 500;
+  line-height: 1.4;
 }
 
 .choice-consequence {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #cccccc;
   font-style: italic;
+  line-height: 1.4;
 }
 </style>

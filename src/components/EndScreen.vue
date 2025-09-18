@@ -127,8 +127,8 @@ const significantActions = computed(() => {
     .slice(-8) // Show last 8 significant actions
     .map(action => ({
       npc: action.npc || 'Unknown',
-      choice: action.text || action.choice || action.description || 'Unknown action',
-      consequence: action.consequence || '',
+      choice: action.choice?.text || action.text || action.choice?.description || action.description || 'Unknown action',
+      consequence: action.choice?.consequence || action.consequence || '',
       popularityChange: action.popularityChange || 0,
       turn: action.originalTurn
     }))

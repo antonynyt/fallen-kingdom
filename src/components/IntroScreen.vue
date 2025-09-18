@@ -2,7 +2,7 @@
   <div class="intro-screen">
     <div class="intro-overlay">
       <div class="intro-content">
-        <h1 class="game-title">The King's Trial</h1>
+        <h1 class="game-title">King simulator</h1>
         <div class="intro-text">
           <p>You have just ascended to the throne after a turbulent succession.
           Your honor is questioned, your people are restless.

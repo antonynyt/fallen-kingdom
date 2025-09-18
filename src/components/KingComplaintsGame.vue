@@ -1,5 +1,14 @@
 <template>
   <div class="game-container">
+    <!-- Background Music -->
+    <audio 
+      ref="backgroundMusic"
+      :src="'/audio/background-music.mp3'"
+      loop
+      preload="auto"
+      :volume="musicVolume"
+    ></audio>
+    
     <!-- API Configuration -->
     <ApiKeyConfig 
       v-if="!apiConfigured"
@@ -55,7 +64,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import ApiKeyConfig from './ApiKeyConfig.vue'
 import IntroScreen from './IntroScreen.vue'
 import GameScreen from './GameScreen.vue'
@@ -67,6 +76,9 @@ import { useAI } from '../composables/useAI'
 
 const apiConfigured = ref(false)
 const gameState = ref('intro') // 'intro', 'playing', 'ended'
+const backgroundMusic = ref(null)
+const musicVolume = ref(0.3) // Adjust volume (0.0 to 1.0)
+const isMusicPlaying = ref(false)
 const { 
   popularity, 
   currentTurn, 
@@ -93,6 +105,25 @@ const { generateNPCContent, hasApiKey } = useAI()
 // Check if API is already configured on mount
 onMounted(() => {
   apiConfigured.value = hasApiKey()
+  
+  // Initialize background music
+  if (backgroundMusic.value) {
+    backgroundMusic.value.addEventListener('canplaythrough', () => {
+      console.log('Background music loaded')
+    })
+    
+    backgroundMusic.value.addEventListener('error', (e) => {
+      console.error('Error loading background music:', e)
+    })
+  }
+})
+
+onUnmounted(() => {
+  // Clean up audio when component is destroyed
+  if (backgroundMusic.value) {
+    backgroundMusic.value.pause()
+    backgroundMusic.value.currentTime = 0
+  }
 })
 
 const currentNPC = ref(null)
@@ -118,12 +149,26 @@ const previousStoryState = ref(null)
 const currentBackground = computed(() => {
   if (gameState.value === 'intro') return '/images/backgrounds/throne-room.jpg'
   if (gameState.value === 'ended') return '/images/backgrounds/ending.svg'
+  
+  // Check for low popularity and show rebellion background
+  if (popularity.value < 40 && popularity.value >= 30) {
+    return '/images/backgrounds/crowd-rebelion.jpg'
+  }
+
+  if (popularity.value < 30) {
+    return '/images/backgrounds/crowd-rebelion2.jpg'
+  }
+  
   return currentNPC.value?.background || '/images/backgrounds/throne-room.jpg'
 })
 
 const startGame = async () => {
   gameState.value = 'playing'
   previousStoryState.value = getStoryState()
+  
+  // Start background music when game starts
+  startBackgroundMusic()
+  
   await loadNextNPC()
 }
 
@@ -420,6 +465,37 @@ const restart = () => {
   lastCharacterActions.value = []
   storyThemeChanges.value = []
   newStoryArcs.value = []
+  
+  // Stop music on restart
+  stopBackgroundMusic()
+}
+
+const startBackgroundMusic = async () => {
+  if (backgroundMusic.value && !isMusicPlaying.value) {
+    try {
+      await backgroundMusic.value.play()
+      isMusicPlaying.value = true
+    } catch (error) {
+      console.log('Autoplay prevented - user interaction required:', error)
+      // You might want to show a "Click to enable music" button here
+    }
+  }
+}
+
+const stopBackgroundMusic = () => {
+  if (backgroundMusic.value && isMusicPlaying.value) {
+    backgroundMusic.value.pause()
+    backgroundMusic.value.currentTime = 0
+    isMusicPlaying.value = false
+  }
+}
+
+const toggleMusic = () => {
+  if (isMusicPlaying.value) {
+    stopBackgroundMusic()
+  } else {
+    startBackgroundMusic()
+  }
 }
 </script>
 

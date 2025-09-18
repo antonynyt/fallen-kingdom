@@ -21,22 +21,31 @@
 
     <!-- Dialogue Area at Bottom -->
     <div class="dialogue-area">
-      <DialogueBubble
-        v-if="currentNpc"
-        :speaker="currentNpc.name"
-        :text="currentDialogue"
-        :character-image="currentNpc.image"
-        :summary="currentNpc.summary"
-      />
+      <div class="character-dialogue-section">
+        <div class="character-portrait">
+          <img v-if="currentNpc" :src="currentNpc.image" :alt="currentNpc.name" class="main-character-image" />
+        </div>
+        <div class="dialogue-section">
+          <DialogueBubble
+            v-if="currentNpc"
+            :speaker="currentNpc.name"
+            :text="currentDialogue"
+            :character-image="null"
+            :summary="currentNpc.summary"
+          />
+        </div>
+      </div>
       
-      <div v-if="showChoices" class="choices-container">
-        <ChoiceButton
-          v-for="(choice, index) in currentNpc.choices"
-          :key="index"
-          :text="choice.text"
-          :consequence="choice.consequence"
-          @click="makeChoice(choice)"
-        />
+      <div v-if="showChoices" class="choices-section">
+        <div class="choices-container">
+          <ChoiceButton
+            v-for="(choice, index) in currentNpc.choices"
+            :key="index"
+            :text="choice.text"
+            :consequence="choice.consequence"
+            @click="makeChoice(choice)"
+          />
+        </div>
       </div>
     </div>
 
@@ -172,8 +181,10 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: #FFDEA9;
+  background: rgba(255, 222, 169, 0.8);
   color: #3e2a0f;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .status-actions {
@@ -184,7 +195,7 @@ onMounted(() => {
 .characters-button {
   background: #3e2a0f;
   color: #fff;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   border: 0;
   border-radius: 8px;
   cursor: pointer;
@@ -193,48 +204,101 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-weight: 500;
+}
+
+.characters-button:hover {
+  background: #2d1f08;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(62, 42, 15, 0.3);
 }
 
 .popularity-meter {
   display: flex;
   align-items: center;
   gap: 1rem;
+  font-size: 1.4rem;
+  font-weight: 500;
 }
 
 .meter {
-  width: 200px;
+  width: 180px;
   height: 20px;
   background: rgb(255 252 246);
   border-radius: 10px;
   overflow: hidden;
+  border: 2px solid #3e2a0f;
 }
 
 .meter-fill {
   height: 100%;
-  background-color: #3e2a0f;
+  background: linear-gradient(90deg, #3e2a0f 0%, #5a3c18 100%);
   transition: width 0.5s ease;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .turn-counter {
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 
 .dialogue-area {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  border-radius: 20px;
-  overflow: hidden;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
   z-index: 20;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-end;
+  height: auto;
+}
+
+.character-dialogue-section {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 1rem;
+  flex: 1;
+  max-width: 50%;
+}
+
+.character-portrait {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.main-character-image {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #ffd700;
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.dialogue-section {
+  width: 100%;
+}
+
+.choices-section {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  overflow-y: auto;
 }
 
 .choices-container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
-  background: rgba(0, 0, 0, 0.8);
+  gap: 0.6rem;
+  /* padding: 1rem 1.5rem; */
+  /* background: rgba(0, 0, 0, 0.7); */
+  /* border-radius: 10px; */
+  /* backdrop-filter: blur(8px); */
+  /* border: 1px solid rgba(255, 215, 0, 0.3); */
 }
 </style>

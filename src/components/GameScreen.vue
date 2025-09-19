@@ -12,7 +12,7 @@
         </div>
         <div class="status-actions">
           <button class="characters-button" @click="showCharacterStatus = true" title="View Characters">
-            Characters
+            View Characters
           </button>
         </div>
         <div class="turn-counter">Turn {{ turn }}/5</div>

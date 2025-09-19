@@ -24,6 +24,8 @@
       <!-- Intro Screen -->
       <IntroScreen
         v-if="gameState === 'intro'"
+        :is-preloading="isPreloadingCharacter"
+        :preload-complete="!!preloadedFirstCharacter"
         @start-game="startGame"
       />
       
@@ -116,6 +118,9 @@ onMounted(() => {
       console.error('Error loading background music:', e)
     })
   }
+  
+  // Preload the first AI character when page loads
+  preloadFirstCharacter()
 })
 
 onUnmounted(() => {
@@ -162,6 +167,49 @@ const currentBackground = computed(() => {
   return currentNPC.value?.background || '/images/backgrounds/throne-room.jpg'
 })
 
+// Store preloaded character to be used when game starts
+const preloadedFirstCharacter = ref(null)
+const isPreloadingCharacter = ref(false)
+
+const preloadFirstCharacter = async () => {
+  if (isPreloadingCharacter.value) return // Prevent multiple preloads
+  
+  isPreloadingCharacter.value = true
+  console.log('Preloading first AI character...')
+  
+  try {
+    // Get the first NPC data
+    const npcData = getCurrentNPC(1)
+    if (!npcData) {
+      console.log('No NPC available for turn 1')
+      return
+    }
+    
+    console.log('Preloading NPC:', npcData.name, 'API configured:', apiConfigured.value)
+    
+    // Track if we have an API key for AI generation
+    const hasAI = hasApiKey()
+    
+    // Generate dynamic content with AI in the background
+    const enhancedNPC = await generateNPCContent(npcData, [], {}) // Empty history and characters for first load
+    
+    // Store the preloaded character
+    preloadedFirstCharacter.value = {
+      npc: enhancedNPC,
+      isAIGenerated: hasAI && (
+        enhancedNPC.dialogue !== npcData.dialogue || 
+        JSON.stringify(enhancedNPC.choices) !== JSON.stringify(npcData.choices)
+      )
+    }
+    
+    console.log('First AI character preloaded successfully:', enhancedNPC.name)
+  } catch (error) {
+    console.error('Error preloading first character:', error)
+  } finally {
+    isPreloadingCharacter.value = false
+  }
+}
+
 const startGame = async () => {
   gameState.value = 'playing'
   previousStoryState.value = getStoryState()
@@ -169,7 +217,29 @@ const startGame = async () => {
   // Start background music when game starts
   startBackgroundMusic()
   
-  await loadNextNPC()
+  // Use preloaded character if available, otherwise load normally
+  if (preloadedFirstCharacter.value) {
+    console.log('Using preloaded first character')
+    currentNPC.value = preloadedFirstCharacter.value.npc
+    isCurrentNPCAIGenerated.value = preloadedFirstCharacter.value.isAIGenerated
+    
+    // If this is a new AI-generated character, add it to the tracking system
+    if (isCurrentNPCAIGenerated.value && preloadedFirstCharacter.value.npc.id !== getCurrentNPC(1)?.id) {
+      addAIGeneratedCharacter(preloadedFirstCharacter.value.npc)
+    }
+    
+    // Execute immediate character actions (if any)
+    const immediateActions = executeImmediateCharacterActions(preloadedFirstCharacter.value.npc)
+    if (immediateActions.length > 0) {
+      console.log('Executing immediate character actions:', immediateActions)
+    }
+    
+    // Clear preloaded character
+    preloadedFirstCharacter.value = null
+  } else {
+    // Fallback to normal loading
+    await loadNextNPC()
+  }
 }
 
 const loadNextNPC = async () => {

@@ -7,7 +7,7 @@
         <div class="intro-content">
           <div class="content">
             <div class="story-section">
-              <h1 class="game-title">King Simulator</h1>
+              <h1 class="game-title">Heavy is the crown</h1>
               <p>You have just ascended to the throne after a turbulent succession.
                 Your honor is questioned.
                 In the coming days, subjects will approach with their complaints and demands.

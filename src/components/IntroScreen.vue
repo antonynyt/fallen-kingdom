@@ -16,7 +16,7 @@
             </div>
             <div class="character-section">
               <div class="character-info">
-                <img src="/images/characters/king.png" alt="" class="king-image" />
+                <img src="/images/characters/king.jpg" alt="" class="king-image" />
                 <h2 class="name">King Braby</h2>
                 <p class="age">Age: 67</p>
                 <p class="crimes">Loves Gambling, taxes and himself.</p>
